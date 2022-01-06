@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://zhuanshulz.github.io/2022/01/06/Machine-Learning-Scaled-Dot-Product-Attention/img.png">
 <meta property="article:published_time" content="2022-01-06T01:05:32.000Z">
-<meta property="article:modified_time" content="2022-01-06T08:14:35.646Z">
+<meta property="article:modified_time" content="2022-01-06T08:22:55.981Z">
 <meta property="article:author" content="Devil">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zhuanshulz.github.io/2022/01/06/Machine-Learning-Scaled-Dot-Product-Attention/img.png">
@@ -188,7 +188,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-01-06 09:05:32 / Modified: 16:14:35" itemprop="dateCreated datePublished" datetime="2022-01-06T09:05:32+08:00">2022-01-06</time>
+      <time title="Created: 2022-01-06 09:05:32 / Modified: 16:22:55" itemprop="dateCreated datePublished" datetime="2022-01-06T09:05:32+08:00">2022-01-06</time>
     </span>
 
   
@@ -209,7 +209,7 @@
 <p>In practice, we compute the attention function on a set of queries simultaneously, packed together into a matrix Q. The keys and values are also packed together into matrices K and V . We compute the matrix of outputs as:</p>
 <p>$$Attention(Q,K,V) = softmax(\frac{QK^{T}}{\sqrt{d_{k}}})V$$</p>
 <p>以上公式中Q代表了query,K代表了keys,V代表了values,$d_k$代表了keys的维数。</p>
-<p>理解：$QK^T$代表了Q和T的相似部分,亦或着说是利用Q来对K的某一部分进行关注(Attention),然后这一结果利用softmax函数进行归一化,中间的除以$\sqrt{d_k}$感觉没有太大的意义,只是为了使得结果的差距没那么大,将结果压缩了一下而以,图中的Mask部分还没有找到对应的解释。最后用这归一化后的概率对V进行加权求和,得到一个值。</p>
+<p>理解：$QK^T$代表了Q和T的相似部分,亦或着说是利用Q来对K的某一部分进行关注(Attention),然后这一结果利用softmax函数进行归一化,中间的除以$\sqrt{d_k}$感觉没有太大的意义,只是为了使得结果的差距没那么大,将结果压缩了一下而以,图中的Mask部分还没有找到对应的解释。最后用这归一化后的概率对V进行加权。</p>
 
     </div>
 
