@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhuanshulz.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="BMP Image File Format Comprehension">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BMP Image File Format">
+<meta property="og:url" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/index.html">
+<meta property="og:site_name" content="A Walker&#39;s Blog">
+<meta property="og:description" content="BMP Image File Format Comprehension">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/BMPfileFormat.png">
+<meta property="og:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/2.png">
+<meta property="og:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/3.png">
+<meta property="article:published_time" content="2022-03-03T12:05:26.000Z">
+<meta property="article:modified_time" content="2022-03-03T13:23:38.539Z">
+<meta property="article:author" content="Devil">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/BMPfileFormat.png">
+
+
+<link rel="canonical" href="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/","path":"2022/03/03/BMP-Image-File-Format/","title":"BMP Image File Format"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>BMP Image File Format | A Walker's Blog</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">A Walker's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">A Walker's Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BMP-Image-File-Format-Comprehension"><span class="nav-number">1.</span> <span class="nav-text">BMP Image File Format Comprehension</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BMP-File-Format-Specifications"><span class="nav-number">1.1.</span> <span class="nav-text">BMP File Format Specifications</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#File-Header"><span class="nav-number">1.1.1.</span> <span class="nav-text">File Header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DIB-header-bitmap-information-header"><span class="nav-number">1.1.2.</span> <span class="nav-text">DIB header (bitmap information header)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OS-2-1-x-BITMAP"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">OS&#x2F;2 1.x BITMAP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows-Bitmap"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">Windows Bitmap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Color-Palette"><span class="nav-number">1.1.3.</span> <span class="nav-text">Color Palette</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pixel-Storage"><span class="nav-number">1.1.4.</span> <span class="nav-text">Pixel Storage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Example-Explanation"><span class="nav-number">1.2.</span> <span class="nav-text">Example Explanation</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Devil</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Devil">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="A Walker's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BMP Image File Format
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-03-03 20:05:26 / Modified: 21:23:38" itemprop="dateCreated datePublished" datetime="2022-03-03T20:05:26+08:00">2022-03-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="BMP-Image-File-Format-Comprehension"><a href="#BMP-Image-File-Format-Comprehension" class="headerlink" title="BMP Image File Format Comprehension"></a>BMP Image File Format Comprehension</h1><span id="more"></span>
+
+<p>cite <a target="_blank" rel="noopener" href="https://docs.fileformat.com/image/bmp/">https://docs.fileformat.com/image/bmp/</a></p>
+<ul>
+<li><a href="#bmp-image-file-format-comprehension">BMP Image File Format Comprehension</a><ul>
+<li><a href="#bmp-file-format-specifications">BMP File Format Specifications</a><ul>
+<li><a href="#file-header">File Header</a></li>
+<li><a href="#dib-header-bitmap-information-header">DIB header (bitmap information header)</a><ul>
+<li><a href="#os2-1x-bitmap">OS/2 1.x BITMAP</a></li>
+<li><a href="#windows-bitmap">Windows Bitmap</a></li>
+</ul>
+</li>
+<li><a href="#color-palette">Color Palette</a></li>
+<li><a href="#pixel-storage">Pixel Storage</a></li>
+</ul>
+</li>
+<li><a href="#example-explanation">Example Explanation</a><h2 id="BMP-File-Format-Specifications"><a href="#BMP-File-Format-Specifications" class="headerlink" title="BMP File Format Specifications"></a>BMP File Format Specifications</h2></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Optional</th>
+<th>Size</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>File Header</td>
+<td>No</td>
+<td>14</td>
+<td>To store general information about the bitmap image file</td>
+</tr>
+<tr>
+<td>DIB Header</td>
+<td>No</td>
+<td>Fixed-Size</td>
+<td>To store detailed information about the bitmap image and define the pixel format</td>
+</tr>
+<tr>
+<td>Extra Bit Masks</td>
+<td>Yes</td>
+<td>12 or 16 bytes</td>
+<td>To define the pixel format</td>
+</tr>
+<tr>
+<td>Colour Palette</td>
+<td>Semi-optional</td>
+<td>Variable-size</td>
+<td>To define colours used by the bitmap image data</td>
+</tr>
+<tr>
+<td>Gap1</td>
+<td>Yes</td>
+<td>Variable-size</td>
+<td>Structure alignment</td>
+</tr>
+<tr>
+<td>Pixel Array</td>
+<td>No</td>
+<td>Variable-size</td>
+<td>Pixel format is defined by the DIB header or Extra bit masks.</td>
+</tr>
+<tr>
+<td>Gap2</td>
+<td>Yes</td>
+<td>Variable-size</td>
+<td>Structure alignment</td>
+</tr>
+<tr>
+<td>ICC Color profile</td>
+<td>Yes</td>
+<td>Variable-size</td>
+<td>To define the colour profile for colour management</td>
+</tr>
+</tbody></table>
+<p><img src="/2022/03/03/BMP-Image-File-Format/BMPfileFormat.png" alt="BMP_File_Format"></p>
+<h3 id="File-Header"><a href="#File-Header" class="headerlink" title="File Header"></a>File Header</h3><table>
+<thead>
+<tr>
+<th>Offset hex</th>
+<th>Offset dec</th>
+<th>Size</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00</td>
+<td>0</td>
+<td>2 bytes</td>
+<td>The header field used to identify the BMP and DIB file is 0x42 0x4D in hexadecimal, same as BM in ASCII. It can following possible values.* BM – Windows 3.1x, 95, NT, … etc. * BA – OS/2 struct bitmap array * CI – OS/2 struct color icon * CP – OS/2 const color pointer * IC – OS/2 struct icon * PT – OS/2 pointer</td>
+</tr>
+<tr>
+<td>02</td>
+<td>2</td>
+<td>4 bytes</td>
+<td>The size of the BMP file in bytes</td>
+</tr>
+<tr>
+<td>06</td>
+<td>6</td>
+<td>2 bytes</td>
+<td>Reserved; actual value depends on the application that creates the image</td>
+</tr>
+<tr>
+<td>08</td>
+<td>8</td>
+<td>2 bytes</td>
+<td>Reserved; actual value depends on the application that creates the image</td>
+</tr>
+<tr>
+<td>0A</td>
+<td>10</td>
+<td>4 bytes</td>
+<td>The offset, i.e. starting address, of the byte where the bitmap image data (pixel array) can be found.</td>
+</tr>
+</tbody></table>
+<h3 id="DIB-header-bitmap-information-header"><a href="#DIB-header-bitmap-information-header" class="headerlink" title="DIB header (bitmap information header)"></a>DIB header (bitmap information header)</h3><p>The detailed information about the image is represented by this header. Based on this information, application will be determined that will be used to display the image on the screen. All such headers contain a DWORD (32-bit) field, specifying their size, so that an application can easily determine the header used int he image. This is basically due to the fact that the DIB format underwent several extensions. Following is the DIB Header with listed fields.</p>
+<p>There’re different kinds of headers, but they’are different and can be distinguash with each other</p>
+<h4 id="OS-2-1-x-BITMAP"><a href="#OS-2-1-x-BITMAP" class="headerlink" title="OS/2 1.x BITMAP"></a>OS/2 1.x BITMAP</h4><table>
+<thead>
+<tr>
+<th>Offset hex</th>
+<th>Offset dec</th>
+<th>Size bytes</th>
+<th>OS/2 1.x BITMAP COREHEADER</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0E</td>
+<td>14</td>
+<td>4</td>
+<td>The size of this header(12 bytes)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>18</td>
+<td>2</td>
+<td>The bitmap width in pixels(unsigned 16-bit)</td>
+</tr>
+<tr>
+<td>14</td>
+<td>20</td>
+<td>2</td>
+<td>The bitmap height in pixels(unsigned 16-bit)</td>
+</tr>
+<tr>
+<td>16</td>
+<td>22</td>
+<td>2</td>
+<td>The number of color planes, must be 1</td>
+</tr>
+<tr>
+<td>18</td>
+<td>24</td>
+<td>2</td>
+<td>The number of bits per pixel(16 or 32 bpp)</td>
+</tr>
+</tbody></table>
+<h4 id="Windows-Bitmap"><a href="#Windows-Bitmap" class="headerlink" title="Windows Bitmap"></a>Windows Bitmap</h4><table>
+<thead>
+<tr>
+<th>Offset hex</th>
+<th>Offset dec</th>
+<th>Size bytes</th>
+<th>Windows Bitmap INFOHEADER</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0E</td>
+<td>14</td>
+<td>4</td>
+<td>The size of this header(40 bytes)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>18</td>
+<td>4</td>
+<td>The bitmap width in pixels(signed integer)</td>
+</tr>
+<tr>
+<td>16</td>
+<td>22</td>
+<td>4</td>
+<td>The bitmap height in pixels(signed integer)</td>
+</tr>
+<tr>
+<td>1A</td>
+<td>26</td>
+<td>2</td>
+<td>The number of color planes, must be 1</td>
+</tr>
+<tr>
+<td>1C</td>
+<td>28</td>
+<td>2</td>
+<td>The number of bits per pixel(1,4,8,16,24 and 32)</td>
+</tr>
+<tr>
+<td>1E</td>
+<td>30</td>
+<td>4</td>
+<td>the compression method being used. See the next table for a list of possible values</td>
+</tr>
+<tr>
+<td>22</td>
+<td>34</td>
+<td>4</td>
+<td>the image size. This is the size of the raw bitmap data; a dummy 0 can be given for BI_RGB bitmaps.</td>
+</tr>
+<tr>
+<td>26</td>
+<td>38</td>
+<td>4</td>
+<td>the horizontal resolution of the image. (pixel per metre, signed integer)</td>
+</tr>
+<tr>
+<td>2A</td>
+<td>42</td>
+<td>4</td>
+<td>the vertical resolution of the image. (pixel per metre, signed integer)</td>
+</tr>
+<tr>
+<td>2E</td>
+<td>46</td>
+<td>4</td>
+<td>the number of colors in the color palette, or 0 to default to 2n</td>
+</tr>
+<tr>
+<td>32</td>
+<td>50</td>
+<td>4</td>
+<td>the number of important colors used, or 0 when every color is important; generally ignored</td>
+</tr>
+</tbody></table>
+<h3 id="Color-Palette"><a href="#Color-Palette" class="headerlink" title="Color Palette"></a>Color Palette</h3><p>A BMP color palette is an array of structures that specify the RGB intensity values of each colour in a display device’s colour palette. Each pixel in the bitmap data stores a single value used as an index into the colour palette. The colour information stored in the element at that index specifies the colour of that pixel. Availability of colour in a bitmap file varies as follow:</p>
+<ul>
+<li>One, 4 and 8-bit - expected to always contain a colour palette</li>
+<li>Sixteen, 24 and 32-bit - never contain colour palettes</li>
+<li>Sixteen and 32-bit BMP files - contain bitfields mask values in place of the colour palette</li>
+</ul>
+<h3 id="Pixel-Storage"><a href="#Pixel-Storage" class="headerlink" title="Pixel Storage"></a>Pixel Storage</h3><p>Bitmap pixels are stored as bits packed in rows where  the size of each row is rounded up to a multiple of 4 bytes (a 32-bit DWORD) by padding. The total amount of bytes required to store the pixels of an image can not be directly calculated by just counting the bits. Since there is padding involved, the effect of round up the size of each row to a multiple of 4 bytes is required. Padding bytes (not necessarily 0) are to be appended to the end of the rows in order to bring up the length of the rows to a multiple of four bytes. When the pixel array is loaded into memory, each row must begin at a memory address that is a multiple of 4.</p>
+<p>The image is actually described by the 32-bit DWORDs representation of the pixel array. Usually pixels are stored “bottom-up”, starting in the lower left corner, going from left to right, and then row by row from the bottom to the top of the image. Pixel formats and their implications are as listed below:</p>
+<p>The 1-bit per pixel (1bpp) format supports 2 distinct colours, (for example: black and white).<br>The 2-bit per pixel (2bpp) format supports 4 distinct colours and stores 4 pixels per 1 byte, the left-most pixel being in the two most significant bits. Each pixel value is a 2-bit index into a table of up to 4 colours.<br>The 4-bit per pixel (4bpp) format supports 16 distinct colours and stores 2 pixels per 1 byte, the left-most pixel being in the more significant nibble. Each pixel value is a 4-bit index into a table of up to 16 colours.<br>The 8-bit per pixel (8bpp) format supports 256 distinct colours and stores 1 pixel per 1 byte. Each byte is an index into a table of up to 256 colours.<br>The 16-bit per pixel (16bpp) format supports 65536 distinct colours and stores 1 pixel per 2-byte WORD. Each WORD can define the alpha, red, green and blue samples of the pixel.<br>The 24-bit pixel (24bpp) format supports 16,777,216 distinct colours and stores 1 pixel value per 3 bytes. Each pixel value defines the red, green and blue samples of the pixel (8.8.8.0.0 in RGBAX notation). Specifically, in the order: blue, green and red (8 bits per each sample).<br>The 32-bit per pixel (32bpp) format supports 4,294,967,296 distinct colours and stores 1 pixel per 4-byte DWORD. Each DWORD can define the alpha, red, green and blue samples of the pixel.</p>
+<h2 id="Example-Explanation"><a href="#Example-Explanation" class="headerlink" title="Example Explanation"></a>Example Explanation</h2><p>There is a 3 x 3 pixels bmp format file.<br><img src="/2022/03/03/BMP-Image-File-Format/2.png" alt="3x3bpm"><br>we open it as a hex format:<br><img src="/2022/03/03/BMP-Image-File-Format/3.png" alt="hexbmp"></p>
+<p>For file header, first 2 bytes are 0x42 4D  or ‘BM’ in ASCII which means this is a BMP and DIB file. </p>
+<p>The next 4 bytes are 0x5C 00 00 00 represent the size of this file(in bytes), because this is a little-endian system, so the real num of bytes is 0x5C. As we can seee from the pic, the index of the bytes is from 0x00 to 0x5B whose length is totally 0x5C.</p>
+<p>The next 4 bytes are reserved.</p>
+<p>The next 4 bytes is the offset of the start address, here it is 0x36.</p>
+<p>The next 4 bytes are 0x 28 00 00 00 which means this is a 40 bytes long windows bitmap. the width of this image is 3, the height of this image is 3. color depth is 0x20 bpp which is 32bpp. The image size is 0x26 which is 38(from 0x36 to 0x5B, 4 * 9 = 36 + 2 more 0x00 bytes(not know the meaning…))</p>
+<p>One thing should be attention:<br><strong>Pixel Array is from left to right and from bottom to top of the image</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/07/Machine-Learning-LSTM/" rel="prev" title="Machine Learning: LSTM">
+                  <i class="fa fa-chevron-left"></i> Machine Learning: LSTM
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Devil</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
