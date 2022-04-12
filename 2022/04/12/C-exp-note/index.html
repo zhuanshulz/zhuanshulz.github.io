@@ -20,27 +20,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"zhuanshulz.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Pinter Declaration in C">
+<meta name="description" content="C++ notes in practice">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pinter Declaration in C">
-<meta property="og:url" content="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/index.html">
+<meta property="og:title" content="C++ exp notes">
+<meta property="og:url" content="https://zhuanshulz.github.io/2022/04/12/C-exp-note/index.html">
 <meta property="og:site_name" content="A Walker&#39;s Blog">
-<meta property="og:description" content="Pinter Declaration in C">
+<meta property="og:description" content="C++ notes in practice">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-03-04T04:26:29.000Z">
-<meta property="article:modified_time" content="2022-03-04T06:48:27.093Z">
+<meta property="article:published_time" content="2022-04-12T00:57:13.000Z">
+<meta property="article:modified_time" content="2022-04-12T01:49:15.759Z">
 <meta property="article:author" content="Devil">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/">
+<link rel="canonical" href="https://zhuanshulz.github.io/2022/04/12/C-exp-note/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/","path":"2022/03/04/pointer-declaration-in-c/","title":"Pinter Declaration in C"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://zhuanshulz.github.io/2022/04/12/C-exp-note/","path":"2022/04/12/C-exp-note/","title":"C++ exp notes"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Pinter Declaration in C | A Walker's Blog</title>
+<title>C++ exp notes | A Walker's Blog</title>
   
 
 
@@ -108,7 +108,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pinter-Declaration-in-C"><span class="nav-number">1.</span> <span class="nav-text">Pinter Declaration in C</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#C-notes-in-practice"><span class="nav-number">1.</span> <span class="nav-text">C++ notes in practice</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#using-new-VS-directly-declare-objects"><span class="nav-number">1.1.</span> <span class="nav-text">using new VS directly declare objects</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -161,7 +161,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/">
+    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2022/04/12/C-exp-note/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -174,7 +174,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Pinter Declaration in C
+          C++ exp notes
         </h1>
 
         <div class="post-meta-container">
@@ -186,7 +186,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-03-04 12:26:29 / Modified: 14:48:27" itemprop="dateCreated datePublished" datetime="2022-03-04T12:26:29+08:00">2022-03-04</time>
+      <time title="Created: 2022-04-12 08:57:13 / Modified: 09:49:15" itemprop="dateCreated datePublished" datetime="2022-04-12T08:57:13+08:00">2022-04-12</time>
     </span>
 
   
@@ -199,24 +199,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="Pinter-Declaration-in-C"><a href="#Pinter-Declaration-in-C" class="headerlink" title="Pinter Declaration in C"></a>Pinter Declaration in C</h1><span id="more"></span>
+        <h1 id="C-notes-in-practice"><a href="#C-notes-in-practice" class="headerlink" title="C++ notes in practice"></a>C++ notes in practice</h1><span id="more"></span>
 
-<p>Not writing C for a period of time. I found a interesting gadget when declaring two pointer today.</p>
-<p>Usually we will declare a pointer in C like this:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE* var;</span><br></pre></td></tr></table></figure>
-<p>and declare a list of varibles with same type like this:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE var1, var2, ..., varn;</span><br></pre></td></tr></table></figure>
-
-<p>So I try to declare two pointer with same type like this:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE* var1, var2;</span><br></pre></td></tr></table></figure>
-<p>Finally I found it wrong, typeof(var1) is <code>TYPE* </code>, but typeof(var2) is <code>TYPE</code>.</p>
-<p>It is not working even if i use the following method</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(TYPE*) var1, var2;</span><br></pre></td></tr></table></figure>
-
-<p>As we can see, <code>TYPE*</code> does not denote a pointer TYPE, the declaration of pointer is divided into two part: First is declare a pointer<code>*val</code>, second identify the type of the object that this pointer point to<code>TYPE (*val)</code>. </p>
-<p>This problem is due to the writing habbit, we usually write <code>*</code> beside with <code>TYPE</code> which will cause the illusion of <code>TYPE*</code> is a pointer type. But we should write <code>TYPE *val</code> as a pointer(<em><strong>first declare a pointer</strong></em>) to a <code>TYPE</code> object(<em><strong>second declare object type</strong></em>).</p>
-<p>Let’s write with the right format to declare two same type pointers:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE *val1,*val2;</span><br></pre></td></tr></table></figure>
+<h2 id="using-new-VS-directly-declare-objects"><a href="#using-new-VS-directly-declare-objects" class="headerlink" title="using new VS directly declare objects"></a>using new <em><strong>VS</strong></em> directly declare objects</h2><p>There’are two ways to declare an object in c++, new or direct declare; For example:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Fruit * a = <span class="keyword">new</span> <span class="built_in">Fruit</span>(params);      <span class="comment">// declare with new operation</span></span><br><span class="line">Fruit b = <span class="built_in">Fruit</span>(params)             <span class="comment">// declare directly</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>The output of new operation is a pointer point to the object which is like molloc a space in the heap and new to delete manually.</li>
+<li>The output of direct declere is the object itself which is located in the stack.</li>
+<li>new object is widely used as a return value or parameter of functions.</li>
+</ul>
 
     </div>
 
@@ -230,14 +221,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/03/BMP-Image-File-Format/" rel="prev" title="BMP Image File Format">
-                  <i class="fa fa-chevron-left"></i> BMP Image File Format
+                <a href="/2022/03/04/pointer-declaration-in-c/" rel="prev" title="Pinter Declaration in C">
+                  <i class="fa fa-chevron-left"></i> Pinter Declaration in C
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/04/12/C-exp-note/" rel="next" title="C++ exp notes">
-                  C++ exp notes <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>

@@ -27,14 +27,14 @@
 <meta property="og:site_name" content="A Walker&#39;s Blog">
 <meta property="og:description" content="BMP Image File Format Comprehension">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/BMPfileFormat.png">
-<meta property="og:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/2.png">
-<meta property="og:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/3.png">
+<meta property="og:image" content="https://zhuanshulz.github.io/.io//BMPfileFormat.png">
+<meta property="og:image" content="https://zhuanshulz.github.io/.io//2.png">
+<meta property="og:image" content="https://zhuanshulz.github.io/.io//3.png">
 <meta property="article:published_time" content="2022-03-03T12:05:26.000Z">
 <meta property="article:modified_time" content="2022-03-03T13:23:38.539Z">
 <meta property="article:author" content="Devil">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/BMPfileFormat.png">
+<meta name="twitter:image" content="https://zhuanshulz.github.io/.io//BMPfileFormat.png">
 
 
 <link rel="canonical" href="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/">
@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -281,7 +281,7 @@
 <td>To define the colour profile for colour management</td>
 </tr>
 </tbody></table>
-<p><img src="/2022/03/03/BMP-Image-File-Format/BMPfileFormat.png" alt="BMP_File_Format"></p>
+<p><img src="/.io//BMPfileFormat.png" alt="BMP_File_Format"></p>
 <h3 id="File-Header"><a href="#File-Header" class="headerlink" title="File Header"></a>File Header</h3><table>
 <thead>
 <tr>
@@ -449,7 +449,7 @@
 <h3 id="Pixel-Storage"><a href="#Pixel-Storage" class="headerlink" title="Pixel Storage"></a>Pixel Storage</h3><p>Bitmap pixels are stored as bits packed in rows where  the size of each row is rounded up to a multiple of 4 bytes (a 32-bit DWORD) by padding. The total amount of bytes required to store the pixels of an image can not be directly calculated by just counting the bits. Since there is padding involved, the effect of round up the size of each row to a multiple of 4 bytes is required. Padding bytes (not necessarily 0) are to be appended to the end of the rows in order to bring up the length of the rows to a multiple of four bytes. When the pixel array is loaded into memory, each row must begin at a memory address that is a multiple of 4.</p>
 <p>The image is actually described by the 32-bit DWORDs representation of the pixel array. Usually pixels are stored “bottom-up”, starting in the lower left corner, going from left to right, and then row by row from the bottom to the top of the image. Pixel formats and their implications are as listed below:</p>
 <p>The 1-bit per pixel (1bpp) format supports 2 distinct colours, (for example: black and white).<br>The 2-bit per pixel (2bpp) format supports 4 distinct colours and stores 4 pixels per 1 byte, the left-most pixel being in the two most significant bits. Each pixel value is a 2-bit index into a table of up to 4 colours.<br>The 4-bit per pixel (4bpp) format supports 16 distinct colours and stores 2 pixels per 1 byte, the left-most pixel being in the more significant nibble. Each pixel value is a 4-bit index into a table of up to 16 colours.<br>The 8-bit per pixel (8bpp) format supports 256 distinct colours and stores 1 pixel per 1 byte. Each byte is an index into a table of up to 256 colours.<br>The 16-bit per pixel (16bpp) format supports 65536 distinct colours and stores 1 pixel per 2-byte WORD. Each WORD can define the alpha, red, green and blue samples of the pixel.<br>The 24-bit pixel (24bpp) format supports 16,777,216 distinct colours and stores 1 pixel value per 3 bytes. Each pixel value defines the red, green and blue samples of the pixel (8.8.8.0.0 in RGBAX notation). Specifically, in the order: blue, green and red (8 bits per each sample).<br>The 32-bit per pixel (32bpp) format supports 4,294,967,296 distinct colours and stores 1 pixel per 4-byte DWORD. Each DWORD can define the alpha, red, green and blue samples of the pixel.</p>
-<h2 id="Example-Explanation"><a href="#Example-Explanation" class="headerlink" title="Example Explanation"></a>Example Explanation</h2><p>There is a 3 x 3 pixels bmp format file.<br><img src="/2022/03/03/BMP-Image-File-Format/2.png" alt="3x3bpm"><br>we open it as a hex format:<br><img src="/2022/03/03/BMP-Image-File-Format/3.png" alt="hexbmp"></p>
+<h2 id="Example-Explanation"><a href="#Example-Explanation" class="headerlink" title="Example Explanation"></a>Example Explanation</h2><p>There is a 3 x 3 pixels bmp format file.<br><img src="/.io//2.png" alt="3x3bpm"><br>we open it as a hex format:<br><img src="/.io//3.png" alt="hexbmp"></p>
 <p>For file header, first 2 bytes are 0x42 4D  or ‘BM’ in ASCII which means this is a BMP and DIB file. </p>
 <p>The next 4 bytes are 0x5C 00 00 00 represent the size of this file(in bytes), because this is a little-endian system, so the real num of bytes is 0x5C. As we can seee from the pic, the index of the bytes is from 0x00 to 0x5B whose length is totally 0x5C.</p>
 <p>The next 4 bytes are reserved.</p>
