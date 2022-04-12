@@ -28,7 +28,7 @@
 <meta property="og:description" content="C++ notes in practice">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-04-12T00:57:13.000Z">
-<meta property="article:modified_time" content="2022-04-12T01:49:15.759Z">
+<meta property="article:modified_time" content="2022-04-12T08:04:59.845Z">
 <meta property="article:author" content="Devil">
 <meta name="twitter:card" content="summary">
 
@@ -108,7 +108,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#C-notes-in-practice"><span class="nav-number">1.</span> <span class="nav-text">C++ notes in practice</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#using-new-VS-directly-declare-objects"><span class="nav-number">1.1.</span> <span class="nav-text">using new VS directly declare objects</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#C-notes-in-practice"><span class="nav-number">1.</span> <span class="nav-text">C++ notes in practice</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#using-new-VS-directly-declare-objects"><span class="nav-number">1.1.</span> <span class="nav-text">using new VS directly declare objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%9C-delete%E2%80%9D-describetion"><span class="nav-number">1.2.</span> <span class="nav-text">“&#x3D;delete” describetion</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -186,7 +186,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-04-12 08:57:13 / Modified: 09:49:15" itemprop="dateCreated datePublished" datetime="2022-04-12T08:57:13+08:00">2022-04-12</time>
+      <time title="Created: 2022-04-12 08:57:13 / Modified: 16:04:59" itemprop="dateCreated datePublished" datetime="2022-04-12T08:57:13+08:00">2022-04-12</time>
     </span>
 
   
@@ -208,7 +208,8 @@
 <li>The output of direct declere is the object itself which is located in the stack.</li>
 <li>new object is widely used as a return value or parameter of functions.</li>
 </ul>
-
+<h2 id="“-delete”-describetion"><a href="#“-delete”-describetion" class="headerlink" title="“=delete” describetion"></a>“=delete” describetion</h2><p>When we using “=delete” to describe a member function, it represents this function can not be called. It will be wrong if called this function.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> data)</span></span>=<span class="keyword">delete</span>; <span class="comment">// deleted, can not be called</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    TestClass obj;</span><br><span class="line">    obj.<span class="built_in">func</span>(<span class="number">100</span>);  <span class="comment">// compiler time error!</span></span><br><span class="line">&#125;        </span><br></pre></td></tr></table></figure>
     </div>
 
     
