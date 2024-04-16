@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhuanshulz.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Gem5默认不支持L3缓存相关配置，如果尝试用--l3cache、--l3_size等参数会发现找不到，需要进行修改才行，以下是具体的修改细节。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gem5模拟器配置L3缓存">
+<meta property="og:url" content="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:site_name" content="Damon&#39;s Site">
+<meta property="og:description" content="Gem5默认不支持L3缓存相关配置，如果尝试用--l3cache、--l3_size等参数会发现找不到，需要进行修改才行，以下是具体的修改细节。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-16T12:54:38.000Z">
+<meta property="article:modified_time" content="2024-04-16T14:09:45.358Z">
+<meta property="article:author" content="Devil">
+<meta property="article:tag" content="Gem5">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/","path":"2024/04/16/Gem5模拟器配置L3缓存/","title":"Gem5模拟器配置L3缓存"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Gem5模拟器配置L3缓存 | Damon's Site</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Damon's Site</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BF%AE%E6%94%B9-Cache-py"><span class="nav-number">1.</span> <span class="nav-text">一、修改 Cache.py</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E4%BB%A3%E7%A0%81%E5%9D%97%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">新增代码块：12345678class L3Cache(Cache):    assoc &#x3D; 64    tag_latency &#x3D; 32    data_latency &#x3D; 32    response_latency &#x3D;32    mshrs &#x3D; 32    tgts_per_mshr &#x3D; 24    write_buffers &#x3D; 16</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BF%AE%E6%94%B9-CacheConfig-py"><span class="nav-number">3.</span> <span class="nav-text">二、修改 CacheConfig.py</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BA"><span class="nav-number">4.</span> <span class="nav-text">修改为1234567dcache_class, icache_class, l2_cache_class, walk_cache_class, l3_cache_class &#x3D; (    core.O3_ARM_v7a_DCache,    core.O3_ARM_v7a_ICache,    core.O3_ARM_v7aL2,    None,    core.O3_ARM_v7aL3,)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BA-1"><span class="nav-number">5.</span> <span class="nav-text">修改为12345678else:    dcache_class, icache_class, l2_cache_class, walk_cache_class, l3_cache_class  &#x3D; (        L1_DCache,        L1_ICache,        L2Cache,        None,        L3Cache,    )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BA-2"><span class="nav-number">6.</span> <span class="nav-text">修改为123456789101112131415161718192021222324252627282930313233if options.l2cache and options.l3cache:    # Provide a clock for the L2 and the L1-to-L2 bus here as they    # are not connected using addTwoLevelCacheHierarchy. Use the    # same clock as the CPUs.    system.l2 &#x3D; l2_cache_class(        clk_domain&#x3D;system.cpu_clk_domain, **_get_cache_opts(&quot;l2&quot;, options)    )    system.l3 &#x3D; l3_cache_class(        clk_domain&#x3D;system.cpu_clk_domain, **_get_cache_opts(&quot;l3&quot;, options)    )    system.tol2bus &#x3D; L2XBar(clk_domain &#x3D; system.cpu_clk_domain)    system.tol3bus &#x3D; L3XBar(clk_domain &#x3D; system.cpu_clk_domain)    system.l2.cpu_side &#x3D; system.tol2bus.mem_side_ports    system.l2.mem_side &#x3D; system.tol3bus.cpu_side_ports    system.l3.cpu_side &#x3D; system.tol3bus.mem_side_ports    system.l3.mem_side &#x3D; system.membus.cpu_side_portselif options.l2cache:    # Provide a clock for the L2 and the L1-to-L2 bus here as they    # are not connected using addTwoLevelCacheHierarchy. Use the    # same clock as the CPUs.    system.l2 &#x3D; l2_cache_class(        clk_domain&#x3D;system.cpu_clk_domain, **_get_cache_opts(&quot;l2&quot;, options)    )    system.tol2bus &#x3D; L2XBar(clk_domain&#x3D;system.cpu_clk_domain)    system.l2.cpu_side &#x3D; system.tol2bus.mem_side_ports    system.l2.mem_side &#x3D; system.membus.cpu_side_ports</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BF%AE%E6%94%B9-XBar-py"><span class="nav-number">7.</span> <span class="nav-text">三、修改 XBar.py</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%EF%BC%9A-src-mem-XBar-py%E6%96%B0%E5%A2%9E%E4%BB%A3%E7%A0%81%E5%9D%97%EF%BC%9A"><span class="nav-number">8.</span> <span class="nav-text">文件路径：.&#x2F;src&#x2F;mem&#x2F;XBar.py新增代码块：12345678910class L3XBar(CoherentXBar):    # 256-bit crossbar by default    width &#x3D; 32    # Assume that most of this is covered by the cache latencies, with    # no more than a single pipeline stage for any packet.    frontend_latency &#x3D; 1    forward_latency &#x3D; 0    response_latency &#x3D; 1    snoop_response_latency &#x3D; 1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BF%AE%E6%94%B9-BaseCPU-py"><span class="nav-number">9.</span> <span class="nav-text">四、修改 BaseCPU.py</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BA-3"><span class="nav-number">10.</span> <span class="nav-text">修改为1from m5.objects.XBar import L2XBar, L3XBar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">11.</span> <span class="nav-text">新增代码块123456789def addThreeLevelCacheHierarchy(    self, ic, dc, l3c, iwc &#x3D; None, dwc &#x3D; None):    self.addPrivateSplitL1Caches(ic, dc, iwc, dwc)    self.toL3Bus &#x3D; L3XBar()    self.connectCachedPorts(self.toL3Bus)    self.l3cache &#x3D; l3c    self.toL2Bus.master &#x3D; self.l3cache.cpu_side    self._cached_ports &#x3D; [&#39;l3cache.mem_side&#39;]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%BF%AE%E6%94%B9-Options-py"><span class="nav-number">12.</span> <span class="nav-text">五、修改 Options.py</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Devil</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Devil">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Damon's Site">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Gem5模拟器配置L3缓存 | Damon's Site">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gem5模拟器配置L3缓存
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-04-16 20:54:38 / 修改时间：22:09:45" itemprop="dateCreated datePublished" datetime="2024-04-16T20:54:38+08:00">2024-04-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Gem5默认不支持L3缓存相关配置，如果尝试用<code>--l3cache</code>、<code>--l3_size</code>等参数会发现找不到，需要进行修改才行，以下是具体的修改细节。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、修改-Cache-py"><a href="#一、修改-Cache-py" class="headerlink" title="一、修改 Cache.py"></a>一、修改 Cache.py</h2><p>文件路径：.&#x2F;configs&#x2F;common&#x2F;Caches.py</p>
+<h2 id="新增代码块："><a href="#新增代码块：" class="headerlink" title="新增代码块："></a>新增代码块：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">L3Cache</span>(<span class="title class_ inherited__">Cache</span>):</span><br><span class="line">    assoc = <span class="number">64</span></span><br><span class="line">    tag_latency = <span class="number">32</span></span><br><span class="line">    data_latency = <span class="number">32</span></span><br><span class="line">    response_latency =<span class="number">32</span></span><br><span class="line">    mshrs = <span class="number">32</span></span><br><span class="line">    tgts_per_mshr = <span class="number">24</span></span><br><span class="line">    write_buffers = <span class="number">16</span></span><br></pre></td></tr></table></figure></h2><h2 id="二、修改-CacheConfig-py"><a href="#二、修改-CacheConfig-py" class="headerlink" title="二、修改 CacheConfig.py"></a>二、修改 CacheConfig.py</h2><p>文件路径：.&#x2F;configs&#x2F;common&#x2F;Caches.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dcache_class, icache_class, l2_cache_class, walk_cache_class = ( </span><br><span class="line">    core.O3_ARM_v7a_DCache, </span><br><span class="line">    core.O3_ARM_v7a_ICache, </span><br><span class="line">    core.O3_ARM_v7aL2, </span><br><span class="line">    <span class="literal">None</span> , </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="修改为"><a href="#修改为" class="headerlink" title="修改为"></a>修改为<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dcache_class, icache_class, l2_cache_class, walk_cache_class, l3_cache_class = (</span><br><span class="line">    core.O3_ARM_v7a_DCache,</span><br><span class="line">    core.O3_ARM_v7a_ICache,</span><br><span class="line">    core.O3_ARM_v7aL2,</span><br><span class="line">    <span class="literal">None</span>,</span><br><span class="line">    core.O3_ARM_v7aL3,</span><br><span class="line">)</span><br></pre></td></tr></table></figure></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> : </span><br><span class="line">    dcache_class, icache_class, l2_cache_class, walk_cache_class = ( </span><br><span class="line">        L1_DCache, </span><br><span class="line">        L1_ICache, </span><br><span class="line">        L2Cache, </span><br><span class="line">        <span class="literal">None</span> , </span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<h2 id="修改为-1"><a href="#修改为-1" class="headerlink" title="修改为"></a>修改为<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    dcache_class, icache_class, l2_cache_class, walk_cache_class, l3_cache_class  = (</span><br><span class="line">        L1_DCache,</span><br><span class="line">        L1_ICache,</span><br><span class="line">        L2Cache,</span><br><span class="line">        <span class="literal">None</span>,</span><br><span class="line">        L3Cache,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> options.l2cache:</span><br><span class="line">    <span class="comment"># Provide a clock for the L2 and the L1-to-L2 bus here as they</span></span><br><span class="line">    <span class="comment"># are not connected using addTwoLevelCacheHierarchy. Use the</span></span><br><span class="line">    <span class="comment"># same clock as the CPUs.</span></span><br><span class="line">    system.l2 = l2_cache_class(</span><br><span class="line">        clk_domain=system.cpu_clk_domain, **_get_cache_opts(<span class="string">&quot;l2&quot;</span>, options)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    system.tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)</span><br><span class="line">    system.l2.cpu_side = system.tol2bus.mem_side_ports</span><br><span class="line">    system.l2.mem_side = system.membus.cpu_side_ports</span><br></pre></td></tr></table></figure>
+<h2 id="修改为-2"><a href="#修改为-2" class="headerlink" title="修改为"></a>修改为<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> options.l2cache <span class="keyword">and</span> options.l3cache:</span><br><span class="line">    <span class="comment"># Provide a clock for the L2 and the L1-to-L2 bus here as they</span></span><br><span class="line">    <span class="comment"># are not connected using addTwoLevelCacheHierarchy. Use the</span></span><br><span class="line">    <span class="comment"># same clock as the CPUs.</span></span><br><span class="line">    system.l2 = l2_cache_class(</span><br><span class="line">        clk_domain=system.cpu_clk_domain, **_get_cache_opts(<span class="string">&quot;l2&quot;</span>, options)</span><br><span class="line">    )</span><br><span class="line">    system.l3 = l3_cache_class(</span><br><span class="line">        clk_domain=system.cpu_clk_domain, **_get_cache_opts(<span class="string">&quot;l3&quot;</span>, options)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    system.tol2bus = L2XBar(clk_domain = system.cpu_clk_domain)</span><br><span class="line">    system.tol3bus = L3XBar(clk_domain = system.cpu_clk_domain)</span><br><span class="line"></span><br><span class="line">    system.l2.cpu_side = system.tol2bus.mem_side_ports</span><br><span class="line">    system.l2.mem_side = system.tol3bus.cpu_side_ports</span><br><span class="line"></span><br><span class="line">    system.l3.cpu_side = system.tol3bus.mem_side_ports</span><br><span class="line">    system.l3.mem_side = system.membus.cpu_side_ports</span><br><span class="line"></span><br><span class="line"><span class="keyword">elif</span> options.l2cache:</span><br><span class="line">    <span class="comment"># Provide a clock for the L2 and the L1-to-L2 bus here as they</span></span><br><span class="line">    <span class="comment"># are not connected using addTwoLevelCacheHierarchy. Use the</span></span><br><span class="line">    <span class="comment"># same clock as the CPUs.</span></span><br><span class="line">    system.l2 = l2_cache_class(</span><br><span class="line">        clk_domain=system.cpu_clk_domain, **_get_cache_opts(<span class="string">&quot;l2&quot;</span>, options)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    system.tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)</span><br><span class="line">    system.l2.cpu_side = system.tol2bus.mem_side_ports</span><br><span class="line">    system.l2.mem_side = system.membus.cpu_side_ports</span><br><span class="line"></span><br></pre></td></tr></table></figure></h2><h2 id="三、修改-XBar-py"><a href="#三、修改-XBar-py" class="headerlink" title="三、修改 XBar.py"></a>三、修改 XBar.py</h2><h2 id="文件路径：-src-mem-XBar-py新增代码块："><a href="#文件路径：-src-mem-XBar-py新增代码块：" class="headerlink" title="文件路径：.&#x2F;src&#x2F;mem&#x2F;XBar.py新增代码块："></a>文件路径：.&#x2F;src&#x2F;mem&#x2F;XBar.py<br>新增代码块：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">L3XBar</span>(<span class="title class_ inherited__">CoherentXBar</span>):</span><br><span class="line">    <span class="comment"># 256-bit crossbar by default</span></span><br><span class="line">    width = <span class="number">32</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Assume that most of this is covered by the cache latencies, with</span></span><br><span class="line">    <span class="comment"># no more than a single pipeline stage for any packet.</span></span><br><span class="line">    frontend_latency = <span class="number">1</span></span><br><span class="line">    forward_latency = <span class="number">0</span></span><br><span class="line">    response_latency = <span class="number">1</span></span><br><span class="line">    snoop_response_latency = <span class="number">1</span></span><br></pre></td></tr></table></figure></h2><h2 id="四、修改-BaseCPU-py"><a href="#四、修改-BaseCPU-py" class="headerlink" title="四、修改 BaseCPU.py"></a>四、修改 BaseCPU.py</h2><p>文件路径：.&#x2F;src&#x2F;cpu&#x2F;BaseCPU.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> m5.objects.XBar <span class="keyword">import</span> L2XBar</span><br></pre></td></tr></table></figure>
+<h2 id="修改为-3"><a href="#修改为-3" class="headerlink" title="修改为"></a>修改为<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> m5.objects.XBar <span class="keyword">import</span> L2XBar, L3XBar</span><br></pre></td></tr></table></figure></h2><h2 id="新增代码块"><a href="#新增代码块" class="headerlink" title="新增代码块"></a>新增代码块<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">addThreeLevelCacheHierarchy</span>(<span class="params"></span></span><br><span class="line"><span class="params">    self, ic, dc, l3c, iwc = <span class="literal">None</span>, dwc = <span class="literal">None</span></span></span><br><span class="line"><span class="params"></span>):</span><br><span class="line">    self.addPrivateSplitL1Caches(ic, dc, iwc, dwc)</span><br><span class="line">    self.toL3Bus = L3XBar()</span><br><span class="line">    self.connectCachedPorts(self.toL3Bus)</span><br><span class="line">    self.l3cache = l3c</span><br><span class="line">    self.toL2Bus.master = self.l3cache.cpu_side</span><br><span class="line">    self._cached_ports = [<span class="string">&#x27;l3cache.mem_side&#x27;</span>]</span><br></pre></td></tr></table></figure></h2><h2 id="五、修改-Options-py"><a href="#五、修改-Options-py" class="headerlink" title="五、修改 Options.py"></a>五、修改 Options.py</h2><p>文件路径：.&#x2F;configs&#x2F;common&#x2F;Options.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&quot;--caches&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--l2cache&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--num-dirs&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>修改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&quot;--caches&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--l2cache&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--l3cache&quot;</span>, action=<span class="string">&quot;store_true&quot;</span>, default=<span class="literal">False</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--num-dirs&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">parser.add_argument(</span><br><span class="line">    <span class="string">&quot;--l3-hwp-type&quot;</span>,</span><br><span class="line">    default=<span class="literal">None</span>,</span><br><span class="line">    choices=ObjectList.hwp_list.get_names(),</span><br><span class="line">    <span class="built_in">help</span>=<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                    type of hardware prefetcher to use with the L3 cache.</span></span><br><span class="line"><span class="string">                    (if not set, use the default prefetcher of</span></span><br><span class="line"><span class="string">                    the selected cache)&quot;&quot;&quot;</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>重新编译之后就能使用<code>--l3cache</code>、<code>--l3_size</code>、<code>--l3-hwp-type</code>等参数配置L3缓存了。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;l3&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Cache&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cxx_class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gem5::Cache&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;l3&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system.l3&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;addr_ranges&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;0:18446744073709551615&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;assoc&quot;</span><span class="punctuation">:</span> <span class="number">16</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;clk_domain&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system.cpu_clk_domain&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;clusivity&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mostly_incl&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;compressor&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;data_latency&quot;</span><span class="punctuation">:</span> <span class="number">34</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;demand_mshr_reserve&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;eventq_index&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;is_read_only&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;max_miss_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;move_contractions&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;mshrs&quot;</span><span class="punctuation">:</span> <span class="number">64</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;power_model&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Gem5/" rel="tag"># Gem5</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/04/pointer-declaration-in-c/" rel="prev" title="Pinter Declaration in C">
+                  <i class="fa fa-angle-left"></i> Pinter Declaration in C
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/" rel="next" title="Gem5模拟器配置StreamPrefecher">
+                  Gem5模拟器配置StreamPrefecher <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Devil</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

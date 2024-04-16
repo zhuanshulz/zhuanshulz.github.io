@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhuanshulz.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Gem5默认不支持StreamPrefetcher，为了在各级缓存使用StreamPrefetcher，需进行如下配置：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gem5模拟器配置StreamPrefecher">
+<meta property="og:url" content="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/index.html">
+<meta property="og:site_name" content="Damon&#39;s Site">
+<meta property="og:description" content="Gem5默认不支持StreamPrefetcher，为了在各级缓存使用StreamPrefetcher，需进行如下配置：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-16T13:31:36.000Z">
+<meta property="article:modified_time" content="2024-04-16T14:09:39.420Z">
+<meta property="article:author" content="Devil">
+<meta property="article:tag" content="Gem5">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/","path":"2024/04/16/Gem5模拟器配置StreamPrefecher/","title":"Gem5模拟器配置StreamPrefecher"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Gem5模拟器配置StreamPrefecher | Damon's Site</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Damon's Site</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%B7%BB%E5%8A%A0%E9%A2%84%E5%8F%96%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">一、添加预取算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BF%AE%E6%94%B9Prefetcher-py"><span class="nav-number">2.</span> <span class="nav-text">二、修改Prefetcher.py</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BF%AE%E6%94%B9Sconscript"><span class="nav-number">3.</span> <span class="nav-text">三、修改Sconscript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BA"><span class="nav-number">4.</span> <span class="nav-text">修改为12345678910SimObject(&#39;Prefetcher.py&#39;, sim_objects&#x3D;[    &#39;BasePrefetcher&#39;, &#39;MultiPrefetcher&#39;, &#39;QueuedPrefetcher&#39;,    &#39;StridePrefetcherHashedSetAssociative&#39;, &#39;StridePrefetcher&#39;, &#39;StreamPrefetcher&#39;,    &#39;TaggedPrefetcher&#39;, &#39;IndirectMemoryPrefetcher&#39;, &#39;SignaturePathPrefetcher&#39;,    &#39;SignaturePathPrefetcherV2&#39;, &#39;AccessMapPatternMatching&#39;, &#39;AMPMPrefetcher&#39;,    &#39;DeltaCorrelatingPredictionTables&#39;, &#39;DCPTPrefetcher&#39;,    &#39;IrregularStreamBufferPrefetcher&#39;, &#39;SlimAMPMPrefetcher&#39;,    &#39;BOPPrefetcher&#39;, &#39;SBOOEPrefetcher&#39;, &#39;STeMSPrefetcher&#39;, &#39;PIFPrefetcher&#39;])Source(&#39;stream.cc&#39;)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Devil</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Devil">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Damon's Site">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Gem5模拟器配置StreamPrefecher | Damon's Site">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gem5模拟器配置StreamPrefecher
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-04-16 21:31:36 / 修改时间：22:09:39" itemprop="dateCreated datePublished" datetime="2024-04-16T21:31:36+08:00">2024-04-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Gem5默认不支持StreamPrefetcher，为了在各级缓存使用StreamPrefetcher，需进行如下配置：</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、添加预取算法"><a href="#一、添加预取算法" class="headerlink" title="一、添加预取算法"></a>一、添加预取算法</h2><p>文件路径：.&#x2F;src&#x2F;mem&#x2F;cache&#x2F;prefetch&#x2F;stream.cc</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#include &quot;mem/cache/prefetch/stream.hh&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#include &lt;cassert&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#include &quot;base/intmath.hh&quot;</span></span><br><span class="line"><span class="comment">#include &quot;base/logging.hh&quot;</span></span><br><span class="line"><span class="comment">#include &quot;base/random.hh&quot;</span></span><br><span class="line"><span class="comment">#include &quot;base/trace.hh&quot;</span></span><br><span class="line"><span class="comment">#include &quot;debug/HWPrefetch.hh&quot;</span></span><br><span class="line"><span class="comment">#include &quot;mem/cache/prefetch/associative_set_impl.hh&quot;</span></span><br><span class="line"><span class="comment">#include &quot;mem/cache/replacement_policies/base.hh&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#include &quot;params/StreamPrefetcher.hh&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">namespace gem5</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">namespace prefetch</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Stream::Stream(const StreamPrefetcherParams &amp;p)</span><br><span class="line">: Queued(p),</span><br><span class="line">  tableSize(p.tableSize),</span><br><span class="line">  useMasterId(p.use_master_id),</span><br><span class="line">  degree(p.degree),</span><br><span class="line">  distance(p.distance) &#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i=<span class="number">0</span>; i&lt;MaxContexts; i++) &#123;</span><br><span class="line">        StreamTable[i] = new StreamTableEntry*[tableSize];</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> j=<span class="number">0</span>; j&lt;tableSize; j++) &#123;</span><br><span class="line">            StreamTable[i][j] = new StreamTableEntry[tableSize];</span><br><span class="line">            StreamTable[i][j]-&gt;LRU_index = j;</span><br><span class="line">            resetEntry(StreamTable[i][j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Stream::~Stream() &#123;</span><br><span class="line">     <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; MaxContexts; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; tableSize; j++) &#123;</span><br><span class="line">                delete[] StreamTable[i][j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// Training <span class="keyword">and</span> Prefetching of streams</span><br><span class="line">void</span><br><span class="line">Stream::calculatePrefetch(const PrefetchInfo &amp;pfi,</span><br><span class="line">                                    std::vector&lt;AddrPriority&gt; &amp;addresses) &#123;</span><br><span class="line">    uint32_t core_id = <span class="number">0</span>;</span><br><span class="line">    Addr blk_addr = pfi.getAddr() &amp; ~(Addr)(blkSize-<span class="number">1</span>); // cache block aligned address.</span><br><span class="line">    // <span class="keyword">assert</span>(core_id &lt; MaxContexts);</span><br><span class="line">    StreamTableEntry** table;</span><br><span class="line">    table = StreamTable[core_id];                          // Per core stream training.</span><br><span class="line">    uint32_t i;</span><br><span class="line">    // Check <span class="keyword">if</span> there <span class="keyword">is</span> a stream entry <span class="keyword">with</span> the same address <span class="keyword">as</span> blk_addr</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; tableSize; i++) &#123;</span><br><span class="line">        switch (table[i]-&gt;status) &#123;</span><br><span class="line">        <span class="keyword">case</span> MONITOR:</span><br><span class="line">            <span class="keyword">if</span>(table[i]-&gt;trainedDirection == ASCENDING) &#123;</span><br><span class="line">                // Ascending order</span><br><span class="line">                <span class="keyword">if</span>((table[i]-&gt;startAddr &lt; blk_addr ) &amp;&amp; ( table[i]-&gt;endAddr &gt; blk_addr)) &#123;</span><br><span class="line">                    // Hit to a stream, which <span class="keyword">is</span> monitored. Issue prefetch requests based on the degree <span class="keyword">and</span> the direction</span><br><span class="line">                    <span class="keyword">for</span> (uint8_t d = <span class="number">1</span>; d &lt;= degree; d++) &#123;</span><br><span class="line">                        Addr pf_addr = table[i]-&gt;endAddr + blkSize * d;</span><br><span class="line">                        addresses.push_back(AddrPriority(pf_addr,<span class="number">0</span>));</span><br><span class="line">                        DPRINTF(HWPrefetch, <span class="string">&quot;Queuing prefetch to %#x.\n&quot;</span>, pf_addr);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span>((table[i]-&gt;endAddr + blkSize * degree) - table[i]-&gt;startAddr &lt;= distance) &#123;</span><br><span class="line">                        table[i]-&gt;endAddr   = table[i]-&gt;endAddr + blkSize * degree;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        table[i]-&gt;startAddr = table[i]-&gt;startAddr + blkSize * degree;</span><br><span class="line">                        table[i]-&gt;endAddr   = table[i]-&gt;endAddr   + blkSize * degree;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(table[i]-&gt;trainedDirection == DESCENDING) &#123;</span><br><span class="line">                // Descending order</span><br><span class="line">                <span class="keyword">if</span>((table[i]-&gt;startAddr &gt; blk_addr ) &amp;&amp; (table[i]-&gt;endAddr &lt; blk_addr)) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (uint8_t d = <span class="number">1</span>; d &lt;= degree; d++) &#123;</span><br><span class="line">                        Addr pf_addr = table[i]-&gt;endAddr - blkSize * d;</span><br><span class="line">                        addresses.push_back(AddrPriority(pf_addr,<span class="number">0</span>));</span><br><span class="line">                        DPRINTF(HWPrefetch, <span class="string">&quot;Queuing prefetch to %#x.\n&quot;</span>, pf_addr);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span>(table[i]-&gt;startAddr - (table[i]-&gt;endAddr - blkSize * degree) &lt;= distance)&#123;</span><br><span class="line">                        table[i]-&gt;endAddr   = table[i]-&gt;endAddr - blkSize * degree;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        table[i]-&gt;startAddr = table[i]-&gt;startAddr - blkSize * degree;</span><br><span class="line">                        table[i]-&gt;endAddr   = table[i]-&gt;endAddr   - blkSize * degree;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">assert</span>(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> TRAINING:</span><br><span class="line">            <span class="keyword">if</span> ((<span class="built_in">abs</span>(table[i]-&gt;allocAddr - blk_addr) &lt;= (distance/<span class="number">2</span>) * blkSize) )&#123;</span><br><span class="line">                // Check whether the address <span class="keyword">is</span> <span class="keyword">in</span> +/- of distance</span><br><span class="line">                <span class="keyword">if</span>(table[i]-&gt;trendDirection[<span class="number">0</span>] == INVALID)&#123;</span><br><span class="line">                    table[i]-&gt;trendDirection[<span class="number">0</span>] = (blk_addr - table[i]-&gt;allocAddr &gt; <span class="number">0</span>) ? ASCENDING : DESCENDING;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">assert</span>(table[i]-&gt;trendDirection[<span class="number">1</span>] == INVALID);</span><br><span class="line">                    table[i]-&gt;trendDirection[<span class="number">1</span>] = (blk_addr - table[i]-&gt;allocAddr &gt; <span class="number">0</span>) ? ASCENDING : DESCENDING;</span><br><span class="line">                    <span class="keyword">if</span>(table[i]-&gt;trendDirection[<span class="number">0</span>] == table[i]-&gt;trendDirection[<span class="number">1</span>]) &#123;</span><br><span class="line">                        table[i]-&gt;trainedDirection = table[i]-&gt;trendDirection[<span class="number">0</span>];</span><br><span class="line">                        table[i]-&gt;startAddr = table[i]-&gt;allocAddr;</span><br><span class="line">                        <span class="keyword">if</span>(table[i]-&gt;trainedDirection != INVALID)&#123;</span><br><span class="line">                            // Based on the trainedDirection (+<span class="number">1</span>:Ascending, -<span class="number">1</span>:Descending) update the end address of a stream</span><br><span class="line">                            table[i]-&gt;endAddr = blk_addr + (table[i]-&gt;trainedDirection) * blkSize * degree;</span><br><span class="line">                        &#125;</span><br><span class="line">                        // Entry <span class="keyword">is</span> ready <span class="keyword">for</span> issuing prefetch requests</span><br><span class="line">                        table[i]-&gt;status = MONITOR;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        resetEntry(table[i]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        default:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;  // End of Switch</span><br><span class="line">    &#125;  // End of <span class="keyword">for</span> loop</span><br><span class="line">    uint32_t HIT_index=i;</span><br><span class="line">    <span class="built_in">int</span> INVALID_index = tableSize;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i=<span class="number">0</span>; i&lt;tableSize; i++) &#123;</span><br><span class="line">        //find empty entry</span><br><span class="line">        <span class="keyword">if</span>(table[i]-&gt;status==INV) &#123;</span><br><span class="line">            INVALID_index = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">int</span> TEMP_index = -<span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int</span> LRU_index = -<span class="number">1000000</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i=<span class="number">0</span>; i&lt;tableSize; i++) &#123;</span><br><span class="line">        //find empty entry</span><br><span class="line">        <span class="keyword">if</span>(table[i]-&gt;LRU_index &gt; TEMP_index) &#123;</span><br><span class="line">            TEMP_index = table[i]-&gt;LRU_index;</span><br><span class="line">            LRU_index  = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">assert</span>(TEMP_index == tableSize - <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">int</span> entry_id;</span><br><span class="line">    <span class="keyword">if</span>(HIT_index!=tableSize) &#123;  //hit</span><br><span class="line">        entry_id = HIT_index;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (INVALID_index!=tableSize) &#123;</span><br><span class="line">        //Existence of invalid streams</span><br><span class="line">        <span class="keyword">assert</span>(table[INVALID_index]-&gt;status == INV);</span><br><span class="line">        table[INVALID_index]-&gt;status = TRAINING;</span><br><span class="line">        table[INVALID_index]-&gt;allocAddr = blk_addr;</span><br><span class="line">        entry_id = INVALID_index;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        //Replace the LRU stream-entry</span><br><span class="line">        <span class="keyword">assert</span>(table[LRU_index]-&gt;status!=INV);</span><br><span class="line">        resetEntry(table[LRU_index]);</span><br><span class="line">        table[LRU_index]-&gt;status = TRAINING;</span><br><span class="line">        table[LRU_index]-&gt;allocAddr = blk_addr;</span><br><span class="line">        entry_id = LRU_index;</span><br><span class="line">    &#125;</span><br><span class="line">    // Shifting the table entries after the eviction of lru-<span class="built_in">id</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i=<span class="number">0</span>; i&lt;tableSize; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(table[i]-&gt;LRU_index &lt; table[entry_id]-&gt;LRU_index)&#123;</span><br><span class="line">            table[i]-&gt;LRU_index = table[i]-&gt;LRU_index + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    table[entry_id]-&gt;LRU_index = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void</span><br><span class="line">Stream::resetEntry(StreamTableEntry *this_entry)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    this_entry-&gt;status                = INV;</span><br><span class="line">    this_entry-&gt;trendDirection[<span class="number">0</span>]     = INVALID;</span><br><span class="line">    this_entry-&gt;trendDirection[<span class="number">1</span>]     = INVALID;</span><br><span class="line">    this_entry-&gt;allocAddr             = <span class="number">0</span>;</span><br><span class="line">    this_entry-&gt;startAddr             = <span class="number">0</span>;</span><br><span class="line">    this_entry-&gt;endAddr               = <span class="number">0</span>;</span><br><span class="line">    this_entry-&gt;trainedDirection      = INVALID;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125; // namespace prefetch</span><br><span class="line"></span><br><span class="line">// prefetch::Stream *</span><br><span class="line">// StreamPrefetcherParams::create() const</span><br><span class="line">// &#123;</span><br><span class="line">//     <span class="keyword">return</span> new prefetch::Stream(*this);</span><br><span class="line">// &#125;</span><br><span class="line"></span><br><span class="line">&#125; // namespace gem5</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<hr>
+<p>文件路径：.&#x2F;src&#x2F;mem&#x2F;cache&#x2F;prefetch&#x2F;stream.hh</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __MEM_CACHE_PREFETCH_STREAM_HH__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __MEM_CACHE_PREFETCH_STREAM_HH__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mem/cache/prefetch/queued.hh&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;params/StreamPrefetcher.hh&quot;</span></span></span><br><span class="line"><span class="comment">// Direction of stream for each stream entry in the stream table</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;base/types.hh&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> gem5</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> prefetch</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">StreamDirection</span>&#123;</span><br><span class="line">        ASCENDING = <span class="number">1</span>,                      <span class="comment">// For example - A, A+1, A+2</span></span><br><span class="line">        DESCENDING = <span class="number">-1</span>,                    <span class="comment">// For example - A, A-1, A-2</span></span><br><span class="line">        INVALID = <span class="number">0</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Status of a stream entry in the stream table.</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">StreamStatus</span>&#123;</span><br><span class="line">            INV       = <span class="number">0</span>,</span><br><span class="line">            TRAINING  = <span class="number">1</span>,                  <span class="comment">// Stream training is not over yet. Once trained will move to MONITOR status</span></span><br><span class="line">            MONITOR   = <span class="number">2</span>                   <span class="comment">// Monitor and Request: Stream entry ready for issuing prefetch requests</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Stream</span> : <span class="keyword">public</span> Queued &#123;</span><br><span class="line">  <span class="keyword">protected</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">uint32_t</span> MaxContexts = <span class="number">64</span>; <span class="comment">// Creates per-core stream tables for upto 64 processor cores</span></span><br><span class="line">    <span class="type">uint32_t</span> tableSize;                     <span class="comment">// Number of entries in a stream table</span></span><br><span class="line">    <span class="type">const</span> <span class="type">bool</span> useMasterId;                 <span class="comment">// Use the master-id to train the streams</span></span><br><span class="line">    <span class="type">uint32_t</span> degree;                        <span class="comment">// Determines the number of prefetch reuquests to be issued at a time</span></span><br><span class="line">    <span class="type">uint32_t</span> distance;                      <span class="comment">// Determines the prefetch distance</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">/* StreamTableEntry </span></span><br><span class="line"><span class="comment">     Stores the basic attributes of a stream table entry.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">StreamTableEntry</span> &#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">public</span>:</span><br><span class="line">        <span class="type">int</span>  LRU_index;</span><br><span class="line">        Addr allocAddr;                     <span class="comment">// Address that initiated the stream training</span></span><br><span class="line">        Addr startAddr;                     <span class="comment">// First address of a stream</span></span><br><span class="line">        Addr endAddr;                       <span class="comment">// Last address of a stream</span></span><br><span class="line">        StreamDirection trainedDirection;   <span class="comment">// Direction of trained stream (Ascending or Descending)</span></span><br><span class="line">        StreamStatus    status;             <span class="comment">// Status of the stream entry</span></span><br><span class="line">        StreamDirection trendDirection[<span class="number">2</span>];  <span class="comment">// Stores the last two stream directions of an entry</span></span><br><span class="line"></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">resetEntry</span> <span class="params">(StreamTableEntry *this_entry)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* Creating a StreamTable for each core with </span></span><br><span class="line"><span class="comment">     Tablesize as the number of stream entries </span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  StreamTableEntry **StreamTable[MaxContexts];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Stream</span>(<span class="type">const</span> StreamPrefetcherParams &amp;p);</span><br><span class="line">  ~<span class="built_in">Stream</span>();</span><br><span class="line">  <span class="comment">/* Function called by cache controller to initiate </span></span><br><span class="line"><span class="comment">     the stream training process</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="comment">// void calculatePrefetch(const PacketPtr &amp;pkt, std::vector&lt;AddrPriority&gt; &amp;addresses);</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">calculatePrefetch</span><span class="params">(<span class="type">const</span> PrefetchInfo &amp;pfi, std::vector&lt;AddrPriority&gt; &amp;addresses)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// namespace prefetch</span></span><br><span class="line">&#125; <span class="comment">// namespace gem5</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// __MEM_CACHE_PREFETCH_STREAM_HH__</span></span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="二、修改Prefetcher-py"><a href="#二、修改Prefetcher-py" class="headerlink" title="二、修改Prefetcher.py"></a>二、修改Prefetcher.py</h2><p>文件路径：.&#x2F;src&#x2F;mem&#x2F;cache&#x2F;prefetch&#x2F;Prefetcher.py</p>
+<p>新增代码块</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">StreamPrefetcher</span>(<span class="title class_ inherited__">QueuedPrefetcher</span>):</span><br><span class="line">    <span class="built_in">type</span> = <span class="string">&#x27;StreamPrefetcher&#x27;</span></span><br><span class="line">    cxx_class = <span class="string">&#x27;gem5::prefetch::Stream&#x27;</span></span><br><span class="line">    cxx_header = <span class="string">&quot;mem/cache/prefetch/stream.hh&quot;</span></span><br><span class="line">    table_sets = Param.Int(<span class="number">16</span>, <span class="string">&quot;Number of sets in PC lookup table&quot;</span>)</span><br><span class="line">    table_assoc = Param.Int(<span class="number">4</span>, <span class="string">&quot;Associativity of PC lookup table&quot;</span>)</span><br><span class="line">    tableSize = Param.Int(<span class="number">8</span>, <span class="string">&quot;Number of sets in PC lookup table&quot;</span>)</span><br><span class="line">    distance = Param.Int(<span class="number">5</span>, <span class="string">&quot;Associativity of PC lookup table&quot;</span>)</span><br><span class="line">    use_master_id = Param.Bool(<span class="literal">True</span>, <span class="string">&quot;Use master id based history&quot;</span>)</span><br><span class="line">    degree = Param.Int(<span class="number">4</span>, <span class="string">&quot;Number of prefetches to generate&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、修改Sconscript"><a href="#三、修改Sconscript" class="headerlink" title="三、修改Sconscript"></a>三、修改Sconscript</h2><p>文件路径：.&#x2F;src&#x2F;mem&#x2F;cache&#x2F;prefetch&#x2F;Sconscript</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SimObject(<span class="string">&#x27;Prefetcher.py&#x27;</span>, sim_objects=[</span><br><span class="line">    <span class="string">&#x27;BasePrefetcher&#x27;</span>, <span class="string">&#x27;MultiPrefetcher&#x27;</span>, <span class="string">&#x27;QueuedPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;StridePrefetcherHashedSetAssociative&#x27;</span>, <span class="string">&#x27;StridePrefetcher&#x27;</span>, </span><br><span class="line">    <span class="string">&#x27;TaggedPrefetcher&#x27;</span>, <span class="string">&#x27;IndirectMemoryPrefetcher&#x27;</span>, <span class="string">&#x27;SignaturePathPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;SignaturePathPrefetcherV2&#x27;</span>, <span class="string">&#x27;AccessMapPatternMatching&#x27;</span>, <span class="string">&#x27;AMPMPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;DeltaCorrelatingPredictionTables&#x27;</span>, <span class="string">&#x27;DCPTPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;IrregularStreamBufferPrefetcher&#x27;</span>, <span class="string">&#x27;SlimAMPMPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;BOPPrefetcher&#x27;</span>, <span class="string">&#x27;SBOOEPrefetcher&#x27;</span>, <span class="string">&#x27;STeMSPrefetcher&#x27;</span>, <span class="string">&#x27;PIFPrefetcher&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="修改为"><a href="#修改为" class="headerlink" title="修改为"></a>修改为<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SimObject(<span class="string">&#x27;Prefetcher.py&#x27;</span>, sim_objects=[</span><br><span class="line">    <span class="string">&#x27;BasePrefetcher&#x27;</span>, <span class="string">&#x27;MultiPrefetcher&#x27;</span>, <span class="string">&#x27;QueuedPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;StridePrefetcherHashedSetAssociative&#x27;</span>, <span class="string">&#x27;StridePrefetcher&#x27;</span>, <span class="string">&#x27;StreamPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;TaggedPrefetcher&#x27;</span>, <span class="string">&#x27;IndirectMemoryPrefetcher&#x27;</span>, <span class="string">&#x27;SignaturePathPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;SignaturePathPrefetcherV2&#x27;</span>, <span class="string">&#x27;AccessMapPatternMatching&#x27;</span>, <span class="string">&#x27;AMPMPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;DeltaCorrelatingPredictionTables&#x27;</span>, <span class="string">&#x27;DCPTPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;IrregularStreamBufferPrefetcher&#x27;</span>, <span class="string">&#x27;SlimAMPMPrefetcher&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;BOPPrefetcher&#x27;</span>, <span class="string">&#x27;SBOOEPrefetcher&#x27;</span>, <span class="string">&#x27;STeMSPrefetcher&#x27;</span>, <span class="string">&#x27;PIFPrefetcher&#x27;</span>])</span><br><span class="line"></span><br><span class="line">Source(<span class="string">&#x27;stream.cc&#x27;</span>)</span><br></pre></td></tr></table></figure></h2><p>重新编译之后就能使用<code>StreamPrefetcher</code>参数配置预取器了。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;prefetcher&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;StreamPrefetcher&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;cxx_class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gem5::prefetch::Stream&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;prefetcher&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system.l2.prefetcher&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;block_size&quot;</span><span class="punctuation">:</span> <span class="number">64</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;cache_snoop&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;clk_domain&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system.cpu_clk_domain&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;degree&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;distance&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;eventq_index&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;latency&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">                ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Gem5/" rel="tag"># Gem5</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/" rel="prev" title="Gem5模拟器配置L3缓存">
+                  <i class="fa fa-angle-left"></i> Gem5模拟器配置L3缓存
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Devil</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
