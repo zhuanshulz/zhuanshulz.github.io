@@ -1,7 +1,7 @@
 ---
 title: Pinter Declaration in C
 date: 2022-03-04 12:26:29
-tags:
+tags: [C++]
 ---
 # Pinter Declaration in C
 <!--more-->
