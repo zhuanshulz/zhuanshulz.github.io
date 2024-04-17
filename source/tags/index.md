@@ -1,5 +1,6 @@
 ---
-title: tags
+title: 标签
 date: 2024-04-16 22:00:39
-tags: [Gem5,C++]
+type: tags
+layout: tags
 ---
