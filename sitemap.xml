@@ -2,9 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zhuanshulz.github.io/about/index.html</loc>
+    
+    <lastmod>2024-04-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zhuanshulz.github.io/schedule/index.html</loc>
     
-    <lastmod>2024-04-16</lastmod>
+    <lastmod>2024-04-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhuanshulz.github.io/tags/index.html</loc>
+    
+    <lastmod>2024-04-17</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -32,33 +50,6 @@
     <loc>https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/</loc>
     
     <lastmod>2024-04-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zhuanshulz.github.io/tags/index.html</loc>
-    
-    <lastmod>2024-04-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zhuanshulz.github.io/categories/index.html</loc>
-    
-    <lastmod>2024-04-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zhuanshulz.github.io/about/index.html</loc>
-    
-    <lastmod>2024-04-11</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -112,7 +103,7 @@
 
   <url>
     <loc>https://zhuanshulz.github.io/</loc>
-    <lastmod>2024-04-16</lastmod>
+    <lastmod>2024-04-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -120,14 +111,14 @@
   
   <url>
     <loc>https://zhuanshulz.github.io/tags/Gem5/</loc>
-    <lastmod>2024-04-16</lastmod>
+    <lastmod>2024-04-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zhuanshulz.github.io/tags/C/</loc>
-    <lastmod>2024-04-16</lastmod>
+    <lastmod>2024-04-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
