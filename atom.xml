@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Damon&#39;s Site</title>
+  <icon>https://zhuanshulz.github.io/images/favicon_200x200.png</icon>
+  
+  <link href="https://zhuanshulz.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://zhuanshulz.github.io/"/>
+  <updated>2025-06-25T07:13:09.171Z</updated>
+  <id>https://zhuanshulz.github.io/</id>
+  
+  <author>
+    <name>Devil</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>spec2017在Gem5的SE模式下的运行错误问题</title>
+    <link href="https://zhuanshulz.github.io/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/"/>
+    <id>https://zhuanshulz.github.io/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/</id>
+    <published>2025-06-25T06:56:14.000Z</published>
+    <updated>2025-06-25T07:13:09.171Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;510.parest在Gem5模拟器的SE模式下运行错误问题&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="Gem5" scheme="https://zhuanshulz.github.io/tags/Gem5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>c++ deque队列</title>
+    <link href="https://zhuanshulz.github.io/2024/04/30/c-deque%E9%98%9F%E5%88%97/"/>
+    <id>https://zhuanshulz.github.io/2024/04/30/c-deque%E9%98%9F%E5%88%97/</id>
+    <published>2024-04-30T14:32:28.000Z</published>
+    <updated>2024-04-30T15:13:02.996Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;C-deque双端队列&quot;&gt;&lt;a href=&quot;#C-deque双端队列&quot; class=&quot;headerlink&quot; title=&quot;C++ deque双端队列&quot;&gt;&lt;/a&gt;C++ deque双端队列&lt;/h1&gt;&lt;p&gt;队列（Deque）是指双端队列。它泛化了队列数据结构，即可以从前端或后端执行插入和删除操作。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="C++" scheme="https://zhuanshulz.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Gem5模拟器配置StreamPrefecher</title>
+    <link href="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/"/>
+    <id>https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEStreamPrefecher/</id>
+    <published>2024-04-16T13:31:36.000Z</published>
+    <updated>2024-04-16T14:09:39.420Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Gem5默认不支持StreamPrefetcher，为了在各级缓存使用StreamPrefetcher，需进行如下配置：&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="Gem5" scheme="https://zhuanshulz.github.io/tags/Gem5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Gem5模拟器配置L3缓存</title>
+    <link href="https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/"/>
+    <id>https://zhuanshulz.github.io/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/</id>
+    <published>2024-04-16T12:54:38.000Z</published>
+    <updated>2025-03-02T00:46:24.570Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Gem5默认不支持L3缓存相关配置，如果尝试用&lt;code&gt;--l3cache&lt;/code&gt;、&lt;code&gt;--l3_size&lt;/code&gt;等参数会发现找不到，需要进行修改才行，以下是具体的修改细节。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="Gem5" scheme="https://zhuanshulz.github.io/tags/Gem5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Pinter Declaration in C</title>
+    <link href="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/"/>
+    <id>https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/</id>
+    <published>2022-03-04T04:26:29.000Z</published>
+    <updated>2024-04-16T14:09:33.210Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Pinter-Declaration-in-C&quot;&gt;&lt;a href=&quot;#Pinter-Declaration-in-C&quot; class=&quot;headerlink&quot; title=&quot;Pinter Declaration in C&quot;&gt;&lt;/a&gt;Pinter Declaration in C&lt;/h1&gt;</summary>
+    
+    
+    
+    
+    <category term="C++" scheme="https://zhuanshulz.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>BMP Image File Format</title>
+    <link href="https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/"/>
+    <id>https://zhuanshulz.github.io/2022/03/03/BMP-Image-File-Format/</id>
+    <published>2022-03-03T12:05:26.000Z</published>
+    <updated>2022-03-03T13:23:38.539Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;BMP-Image-File-Format-Comprehension&quot;&gt;&lt;a href=&quot;#BMP-Image-File-Format-Comprehension&quot; class=&quot;headerlink&quot; title=&quot;BMP Image File Format Comprehension&quot;&gt;&lt;/a&gt;BMP Image File Format Comprehension&lt;/h1&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Machine Learning: LSTM</title>
+    <link href="https://zhuanshulz.github.io/2022/01/07/Machine-Learning-LSTM/"/>
+    <id>https://zhuanshulz.github.io/2022/01/07/Machine-Learning-LSTM/</id>
+    <published>2022-01-07T01:19:33.000Z</published>
+    <updated>2022-01-07T02:24:16.495Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;LSTM-Long-Short-Term-Memory-networks&quot;&gt;&lt;a href=&quot;#LSTM-Long-Short-Term-Memory-networks&quot; class=&quot;headerlink&quot; title=&quot;LSTM: Long Short Term Memory networks&quot;&gt;&lt;/a&gt;LSTM: Long Short Term Memory networks&lt;/h1&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Machine Learning: Embedding</title>
+    <link href="https://zhuanshulz.github.io/2022/01/06/Machine-Learning-Embedding/"/>
+    <id>https://zhuanshulz.github.io/2022/01/06/Machine-Learning-Embedding/</id>
+    <published>2022-01-06T13:26:48.000Z</published>
+    <updated>2022-01-06T13:59:36.975Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Embedding&quot;&gt;&lt;a href=&quot;#Embedding&quot; class=&quot;headerlink&quot; title=&quot;Embedding&quot;&gt;&lt;/a&gt;Embedding&lt;/h1&gt;&lt;p&gt;Embedding is a function which input discrete variables and output continuous vectors. It can reduce the dimensionality of the input variables. Such that inputs that behave similarly have similar embedding outputs.&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Machine Learning: Scaled Dot-Product Attention</title>
+    <link href="https://zhuanshulz.github.io/2022/01/06/Machine-Learning-Scaled-Dot-Product-Attention/"/>
+    <id>https://zhuanshulz.github.io/2022/01/06/Machine-Learning-Scaled-Dot-Product-Attention/</id>
+    <published>2022-01-06T01:05:32.000Z</published>
+    <updated>2022-01-06T08:22:55.981Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Scaled-Dot-Product-Attention&quot;&gt;&lt;a href=&quot;#Scaled-Dot-Product-Attention&quot; class=&quot;headerlink&quot; title=&quot;Scaled Dot-Product Attention&quot;&gt;&lt;/a&gt;Scaled Dot-Product Attention&lt;/h1&gt;&lt;p&gt;cite &lt;a href=&quot;https://www.semanticscholar.org/paper/Attention-is-All-you-Need-Vaswani-Shazeer/204e3073870fae3d05bcbc2f6a8e263d9b72e776&quot;&gt;Attention_Is_All_You_Need&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2022/01/06/Machine-Learning-Scaled-Dot-Product-Attention/img.png&quot; alt=&quot;scaled_dot_product_attention&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Machine Learning: Softmax Function</title>
+    <link href="https://zhuanshulz.github.io/2022/01/05/Machine-Learning-Softmax-Function/"/>
+    <id>https://zhuanshulz.github.io/2022/01/05/Machine-Learning-Softmax-Function/</id>
+    <published>2022-01-05T15:06:26.000Z</published>
+    <updated>2022-01-06T08:14:50.370Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Softmax-Function&quot;&gt;&lt;a href=&quot;#Softmax-Function&quot; class=&quot;headerlink&quot; title=&quot;Softmax Function&quot;&gt;&lt;/a&gt;Softmax Function&lt;/h1&gt;&lt;p&gt;cite: &lt;a href=&quot;https://en.wikipedia.org/wiki/Softmax_function&quot;&gt;wikipedia_Softmax_function&lt;/a&gt; &lt;a href=&quot;https://deepai.org/machine-learning-glossary-and-terms/softmax-layer&quot;&gt;DeepAI_Softmax_function&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The softmax function is a function that turns a vector of K real values into a vector of K real values that sum to 1. The input values can be positive, negative, zero, or greater than one, but the softmax transforms them into values between 0 and 1, so that they can be interpreted as probabilities. If one of the inputs is small or negative, the softmax turns it into a small probability, and if an input is large, then it turns it into a large probability, but it will always remain between 0 and 1.&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+</feed>
