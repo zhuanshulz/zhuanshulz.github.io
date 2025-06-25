@@ -20,28 +20,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"zhuanshulz.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Pinter Declaration in C">
+    <meta name="description" content="510.parest在Gem5模拟器的SE模式下运行错误问题">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pinter Declaration in C">
-<meta property="og:url" content="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/index.html">
+<meta property="og:title" content="spec2017在Gem5的SE模式下的运行错误问题">
+<meta property="og:url" content="https://zhuanshulz.github.io/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Damon&#39;s Site">
-<meta property="og:description" content="Pinter Declaration in C">
+<meta property="og:description" content="510.parest在Gem5模拟器的SE模式下运行错误问题">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-04T04:26:29.000Z">
-<meta property="article:modified_time" content="2024-04-16T14:09:33.210Z">
+<meta property="article:published_time" content="2025-06-25T06:56:14.000Z">
+<meta property="article:modified_time" content="2025-06-25T07:13:09.171Z">
 <meta property="article:author" content="Devil">
-<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Gem5">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/">
+<link rel="canonical" href="https://zhuanshulz.github.io/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/","path":"2022/03/04/pointer-declaration-in-c/","title":"Pinter Declaration in C"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhuanshulz.github.io/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/","path":"2025/06/25/spec2017在Gem5的SE模式下的运行错误问题/","title":"spec2017在Gem5的SE模式下的运行错误问题"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Pinter Declaration in C | Damon's Site</title>
+<title>spec2017在Gem5的SE模式下的运行错误问题 | Damon's Site</title>
   
 
 
@@ -113,7 +113,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pinter-Declaration-in-C"><span class="nav-number">1.</span> <span class="nav-text">Pinter Declaration in C</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">问题介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E5%92%8C%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.</span> <span class="nav-text">问题分析和定位</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">解决方法</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -161,7 +161,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2022/03/04/pointer-declaration-in-c/">
+    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/conan.jpeg">
@@ -174,12 +174,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Pinter Declaration in C | Damon's Site">
+      <meta itemprop="name" content="spec2017在Gem5的SE模式下的运行错误问题 | Damon's Site">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Pinter Declaration in C
+          spec2017在Gem5的SE模式下的运行错误问题
         </h1>
 
         <div class="post-meta-container">
@@ -189,15 +189,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2022-03-04 12:26:29" itemprop="dateCreated datePublished" datetime="2022-03-04T12:26:29+08:00">2022-03-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-04-16 22:09:33" itemprop="dateModified" datetime="2024-04-16T22:09:33+08:00">2024-04-16</time>
+      <time title="创建时间：2025-06-25 14:56:14 / 修改时间：15:13:09" itemprop="dateCreated datePublished" datetime="2025-06-25T14:56:14+08:00">2025-06-25</time>
     </span>
 
   
@@ -209,24 +203,28 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="Pinter-Declaration-in-C"><a href="#Pinter-Declaration-in-C" class="headerlink" title="Pinter Declaration in C"></a>Pinter Declaration in C</h1><span id="more"></span>
+    <div class="post-body" itemprop="articleBody"><p>510.parest在Gem5模拟器的SE模式下运行错误问题</p>
+<span id="more"></span>
 
-<p>Not writing C for a period of time. I found a interesting gadget when declaring two pointer today.</p>
-<p>Usually we will declare a pointer in C like this:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE* var;</span><br></pre></td></tr></table></figure>
-<p>and declare a list of varibles with same type like this:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE var1, var2, ..., varn;</span><br></pre></td></tr></table></figure>
+<!-- --- -->
 
-<p>So I try to declare two pointer with same type like this:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE* var1, var2;</span><br></pre></td></tr></table></figure>
-<p>Finally I found it wrong, typeof(var1) is <code>TYPE* </code>, but typeof(var2) is <code>TYPE</code>.</p>
-<p>It is not working even if i use the following method</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(TYPE*) var1, var2;</span><br></pre></td></tr></table></figure>
+<h1 id="问题介绍"><a href="#问题介绍" class="headerlink" title="问题介绍"></a>问题介绍</h1><p>在Gem5模拟器的SE模式下运行510.parest程序会出现如下报错并中断。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">An error occurred in line &lt;377&gt; of file &lt;source/base/utilities.cc&gt; in function The violated condition was: </span><br><span class="line"></span><br><span class="line">cpuinfo </span><br><span class="line"></span><br><span class="line">The name and call sequence of the exception was: </span><br><span class="line"></span><br><span class="line">ExcIO()</span><br></pre></td></tr></table></figure>
 
-<p>As we can see, <code>TYPE*</code> does not denote a pointer TYPE, the declaration of pointer is divided into two part: First is declare a pointer<code>*val</code>, second identify the type of the object that this pointer point to<code>TYPE (*val)</code>. </p>
-<p>This problem is due to the writing habbit, we usually write <code>*</code> beside with <code>TYPE</code> which will cause the illusion of <code>TYPE*</code> is a pointer type. But we should write <code>TYPE *val</code> as a pointer(<em><strong>first declare a pointer</strong></em>) to a <code>TYPE</code> object(<em><strong>second declare object type</strong></em>).</p>
-<p>Let’s write with the right format to declare two same type pointers:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TYPE *val1,*val2;</span><br></pre></td></tr></table></figure>
+<h1 id="问题分析和定位"><a href="#问题分析和定位" class="headerlink" title="问题分析和定位"></a>问题分析和定位</h1><p>根据报错信息找到source&#x2F;base&#x2F;utilities.cc:377的位置：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">get_cpu_load</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::ifstream cpuinfo;</span><br><span class="line">    cpuinfo.<span class="built_in">open</span>(<span class="string">&quot;/proc/loadavg&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">AssertThrow</span>(cpuinfo, <span class="built_in">ExcIO</span>());</span><br><span class="line"></span><br><span class="line">    <span class="type">double</span> load;</span><br><span class="line">    cpuinfo &gt;&gt; load;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> load;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，该函数是在打开&#x2F;proc&#x2F;loadavg文件，获取系统的负载情况数据。如果打开文件错误，则会抛出断言错误。</p>
+<p>考虑在Gem5模式的SE模式下，模拟环境并没有操作系统，因此并不能读取&#x2F;proc&#x2F;loadavg这一个LINUX操作系统文件，故发生断言异常。</p>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>一个简单直接的办法是直接修改这一个函数，将读取文件的操作跳过，然后重新编译。</p>
+<p>如果大家有更加好的解决办法，非常欢迎与我交流。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">get_cpu_load</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// std::ifstream cpuinfo;</span></span><br><span class="line">    <span class="comment">// cpuinfo.open(&quot;/proc/loadavg&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// AssertThrow(cpuinfo, ExcIO());</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// double load;</span></span><br><span class="line">    <span class="comment">// cpuinfo &gt;&gt; load;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// return load;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在修改了源代码后，还需要在.cfg配置文件中设置跳过验证，否则编译不会通过。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strict_rundir_verify = 0</span><br></pre></td></tr></table></figure>
+
+
+<p><a target="_blank" rel="noopener" href="https://tomsworkspace.github.io/2020/10/11/gem5%E8%BF%90%E8%A1%8CSPECCPU2017benchmark/">参考链接-github.io</a></p>
 
     </div>
 
@@ -236,21 +234,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Gem5/" rel="tag"># Gem5</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/03/BMP-Image-File-Format/" rel="prev" title="BMP Image File Format">
-                  <i class="fa fa-angle-left"></i> BMP Image File Format
+                <a href="/2024/04/30/c-deque%E9%98%9F%E5%88%97/" rel="prev" title="c++ deque队列">
+                  <i class="fa fa-angle-left"></i> c++ deque队列
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/04/16/Gem5%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%85%8D%E7%BD%AEL3%E7%BC%93%E5%AD%98/" rel="next" title="Gem5模拟器配置L3缓存">
-                  Gem5模拟器配置L3缓存 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
