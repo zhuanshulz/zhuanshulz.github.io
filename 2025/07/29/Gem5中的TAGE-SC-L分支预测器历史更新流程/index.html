@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="3xPEnMxiUnwbJvez1O5uw476cK9eoW-BGpfC5upq6FQ">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhuanshulz.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="分析Gem5中的TAGE-SC-L分支预测器工作流程，重点关注预测性历史更新策略的技术实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gem5中的TAGE-SC-L分支预测器历史更新流程">
+<meta property="og:url" content="https://zhuanshulz.github.io/2025/07/29/Gem5%E4%B8%AD%E7%9A%84TAGE-SC-L%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B%E5%99%A8%E5%8E%86%E5%8F%B2%E6%9B%B4%E6%96%B0%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Damon&#39;s Site">
+<meta property="og:description" content="分析Gem5中的TAGE-SC-L分支预测器工作流程，重点关注预测性历史更新策略的技术实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-29T09:02:30.000Z">
+<meta property="article:modified_time" content="2025-07-29T12:30:21.204Z">
+<meta property="article:author" content="Devil">
+<meta property="article:tag" content="Gem5">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhuanshulz.github.io/2025/07/29/Gem5%E4%B8%AD%E7%9A%84TAGE-SC-L%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B%E5%99%A8%E5%8E%86%E5%8F%B2%E6%9B%B4%E6%96%B0%E6%B5%81%E7%A8%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhuanshulz.github.io/2025/07/29/Gem5%E4%B8%AD%E7%9A%84TAGE-SC-L%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B%E5%99%A8%E5%8E%86%E5%8F%B2%E6%9B%B4%E6%96%B0%E6%B5%81%E7%A8%8B/","path":"2025/07/29/Gem5中的TAGE-SC-L分支预测器历史更新流程/","title":"Gem5中的TAGE-SC-L分支预测器历史更新流程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Gem5中的TAGE-SC-L分支预测器历史更新流程 | Damon's Site</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Damon's Site" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Damon's Site</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li><li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%8C%87%E4%BB%A4%E5%88%9B%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">一、指令创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81TAGE%E9%A2%84%E6%B5%8B"><span class="nav-number">2.</span> <span class="nav-text">二、TAGE预测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-threadHistory%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 threadHistory结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%9D%9E%E9%A2%84%E6%B5%8B%E6%80%A7%E8%B7%AF%E5%BE%84%E5%8E%86%E5%8F%B2%E6%9B%B4%E6%96%B0"><span class="nav-number">3.</span> <span class="nav-text">三、非预测性路径历史更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%A2%84%E6%B5%8B%E6%80%A7%E5%8E%86%E5%8F%B2%E6%9B%B4%E6%96%B0"><span class="nav-number">4.</span> <span class="nav-text">三、预测性历史更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E9%A2%84%E6%B5%8B%E6%80%A7%E5%8E%86%E5%8F%B2%E6%81%A2%E5%A4%8D"><span class="nav-number">5.</span> <span class="nav-text">四、预测性历史恢复</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Devil"
+      src="/images/conan.jpeg">
+  <p class="site-author-name" itemprop="name">Devil</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhuanshulz.github.io/2025/07/29/Gem5%E4%B8%AD%E7%9A%84TAGE-SC-L%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B%E5%99%A8%E5%8E%86%E5%8F%B2%E6%9B%B4%E6%96%B0%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/conan.jpeg">
+      <meta itemprop="name" content="Devil">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Damon's Site">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Gem5中的TAGE-SC-L分支预测器历史更新流程 | Damon's Site">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gem5中的TAGE-SC-L分支预测器历史更新流程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-29 17:02:30 / 修改时间：20:30:21" itemprop="dateCreated datePublished" datetime="2025-07-29T17:02:30+08:00">2025-07-29</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>分析Gem5中的TAGE-SC-L分支预测器工作流程，重点关注预测性历史更新策略的技术实现。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、指令创建"><a href="#一、指令创建" class="headerlink" title="一、指令创建"></a>一、指令创建</h2><p>文件路径：.&#x2F;src&#x2F;cpu&#x2F;o3&#x2F;fetch.cc</p>
+<p>instruction在buildInst函数执行后生成，随后会逐步调用函数，调用顺序如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fetch.cc:</span></span><br><span class="line">-&gt;<span class="built_in">lookupAndUpdateNextPC</span>()</span><br><span class="line">    -&gt;branchPred-&gt;<span class="built_in">predict</span>()</span><br><span class="line"><span class="comment">// bpred_unit.cc:</span></span><br><span class="line">    -&gt;<span class="built_in">lookup</span>()</span><br><span class="line"><span class="comment">// tage.cc:</span></span><br><span class="line">    -&gt;<span class="built_in">predict</span>()</span><br><span class="line"><span class="comment">// tage-sc-l.cc:</span></span><br><span class="line">    -&gt;tage-&gt;<span class="built_in">tagePredict</span>()</span><br><span class="line">    -&gt;loopPredictor-&gt;<span class="built_in">loopPredict</span>()</span><br><span class="line">    -&gt;statisticalCorrector-&gt;<span class="built_in">scPredict</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、TAGE预测"><a href="#二、TAGE预测" class="headerlink" title="二、TAGE预测"></a>二、TAGE预测</h2><p>文件路径：.&#x2F;src&#x2F;cpu&#x2F;pred&#x2F;tage_sc_l.cc.cc</p>
+<p>在tage_sc_l.cc.cc中，会分别调用TAGE、Loop、SC预测器进行预测，首先讨论TAGE预测器。在调用tage-&gt;tagePredict()后，函数调用路径如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tage-sc-l.cc:</span></span><br><span class="line">    -&gt;tage-&gt;<span class="built_in">tagePredict</span>()</span><br><span class="line"><span class="comment">// tage-base.cc:</span></span><br><span class="line">    -&gt;<span class="built_in">calculateIndicesAndTags</span>()</span><br><span class="line">        <span class="comment">// tage_sc_l.cc:</span></span><br><span class="line">        -&gt;<span class="built_in">calculateIndicesAndTags</span>() <span class="comment">// 使用的是重写后的实现。</span></span><br><span class="line">        -&gt;<span class="built_in">gindex</span>()</span><br><span class="line">            <span class="comment">// 这里使用的历史是通过threadHistory结构进行维护的</span></span><br><span class="line">            index = shifted_pc ^</span><br><span class="line">                (shifted_pc &gt;&gt; ((<span class="type">int</span>) <span class="built_in">abs</span>(logTagTableSizes[bank] - bank) + <span class="number">1</span>)) ^</span><br><span class="line">                threadHistory[tid].computeIndices[bank].comp ^</span><br><span class="line">                <span class="built_in">F</span>(threadHistory[tid].pathHist, hlen, bank);</span><br><span class="line">        -&gt;<span class="built_in">gtage</span>()</span><br><span class="line">            <span class="comment">// 这里TAGE_SC_L_64KB.cc 重写了函数</span></span><br><span class="line">            <span class="comment">// tage_sc_l_64KB.cc:</span></span><br><span class="line">            Addr shifted_pc = pc &gt;&gt; instShiftAmt;</span><br><span class="line">            <span class="type">int</span> tag = shifted_pc ^ threadHistory[tid].computeTags[<span class="number">0</span>][bank].comp ^</span><br><span class="line">              (threadHistory[tid].computeTags[<span class="number">1</span>][bank].comp &lt;&lt; <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> (tag &amp; ((<span class="number">1ULL</span> &lt;&lt; tagTableTagWidths[bank]) - <span class="number">1</span>));</span><br><span class="line">            <span class="comment">// 同样使用threadHistory结构进行历史计算</span></span><br><span class="line">    -&gt;<span class="built_in">bindex</span>()</span><br><span class="line">    <span class="comment">//Look for the bank with longest matching history</span></span><br><span class="line">    <span class="comment">//Look for the alternate bank</span></span><br><span class="line">    <span class="comment">//computes the prediction and the alternate prediction</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-threadHistory结构"><a href="#2-1-threadHistory结构" class="headerlink" title="2.1 threadHistory结构"></a>2.1 threadHistory结构</h3><p>threadHistory结构体定义如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Keep per-thread histories to</span></span><br><span class="line"><span class="comment">// support SMT.</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ThreadHistory</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Speculative path history</span></span><br><span class="line">    <span class="comment">// (LSB of branch address)</span></span><br><span class="line">    <span class="type">int</span> pathHist;           <span class="comment">// 路径历史</span></span><br><span class="line">    <span class="comment">// Non-speculative path history</span></span><br><span class="line">    <span class="type">int</span> nonSpecPathHist;    <span class="comment">// 非预测性路径历史</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Speculative branch direction</span></span><br><span class="line">    <span class="comment">// history (circular buffer)</span></span><br><span class="line">    std::vector&lt;<span class="type">uint8_t</span>&gt; globalHist;    <span class="comment">// 预测性分支历史</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Index to most recent branch outcome</span></span><br><span class="line">    <span class="type">int</span> ptGhist;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Speculative folded histories.</span></span><br><span class="line">    FoldedHistory *computeIndices;      <span class="comment">// 实际参与计算的部分</span></span><br><span class="line">    FoldedHistory *computeTags[<span class="number">2</span>];      <span class="comment">// 实际参与计算的部分</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其中FoldedHistory是折叠的历史，每次新的历史值来了后，可以通过update进行更新，回滚也可以通过restore进行恢复。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">FoldedHistory</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> comp;</span><br><span class="line">    <span class="type">int</span> compLength;</span><br><span class="line">    <span class="type">int</span> origLength;</span><br><span class="line">    <span class="type">int</span> outpoint;</span><br><span class="line">    <span class="type">int</span> bufferSize;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">FoldedHistory</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        comp = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span> original_length, <span class="type">int</span> compressed_length)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        origLength = original_length;</span><br><span class="line">        compLength = compressed_length;</span><br><span class="line">        outpoint = original_length % compressed_length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">uint8_t</span> * h)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        comp = (comp &lt;&lt; <span class="number">1</span>) | h[<span class="number">0</span>];</span><br><span class="line">        comp ^= h[origLength] &lt;&lt; outpoint;</span><br><span class="line">        comp ^= (comp &gt;&gt; compLength);</span><br><span class="line">        comp &amp;= (<span class="number">1ULL</span> &lt;&lt; compLength) - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">restore</span><span class="params">(<span class="type">uint8_t</span> * h)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        comp ^= h[origLength] &lt;&lt; outpoint;</span><br><span class="line">        <span class="keyword">auto</span> tmp = (comp &amp; <span class="number">1</span>) ^ h[<span class="number">0</span>];</span><br><span class="line">        comp = (tmp &lt;&lt; (compLength<span class="number">-1</span>)) | (comp &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>其中 pathHist&#x2F;computeIndices&#x2F;</p>
+<h2 id="三、非预测性路径历史更新"><a href="#三、非预测性路径历史更新" class="headerlink" title="三、非预测性路径历史更新"></a>三、非预测性路径历史更新</h2><p>更新函数调用路径：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fetch.cc:</span></span><br><span class="line"><span class="comment">// 如果是预测正确的指令，即没有发生流水线冲刷时的分支指令正常提交了</span></span><br><span class="line">-&gt;branchPred-&gt;<span class="built_in">update</span>()</span><br><span class="line">    <span class="comment">// bpred_unit.cc:</span></span><br><span class="line">    <span class="keyword">while</span> (!predHist[tid].<span class="built_in">empty</span>() &amp;&amp;</span><br><span class="line">        predHist[tid].<span class="built_in">back</span>()-&gt;seqNum &lt;= done_sn) &#123;</span><br><span class="line">        <span class="built_in">commitBranch</span>(tid, *predHist[tid].<span class="built_in">rbegin</span>());</span><br><span class="line">        <span class="keyword">delete</span> predHist[tid].<span class="built_in">back</span>();</span><br><span class="line">        predHist[tid].<span class="built_in">pop_back</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 其中predHist是一个vector元素，保存的是History，</span></span><br><span class="line">    <span class="comment">// typedef std::deque&lt;PredictorHistory*&gt; History;</span></span><br><span class="line">    <span class="comment">// History是PredictorHistory指针的队列</span></span><br><span class="line"></span><br><span class="line">    -&gt;<span class="built_in">commitBranch</span>()</span><br><span class="line">        <span class="comment">// tage_sc_l.cc</span></span><br><span class="line">        -&gt;<span class="built_in">update</span>()</span><br><span class="line">        <span class="comment">// tage_base.cc</span></span><br><span class="line">        -&gt;tage-&gt;<span class="built_in">updateHistories</span>()</span><br><span class="line">                threadHistory[tid].nonSpecPathHist = </span><br><span class="line">                    <span class="built_in">calcNewPathHist</span>(tid, branch_pc, bi-&gt;pathHist, taken, <span class="built_in">branchTypeExtra</span>(inst), target);</span><br><span class="line">            <span class="comment">// 非预测性路径历史phist更新，phist是分支PC的某一位，通常是最低位。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、预测性历史更新"><a href="#三、预测性历史更新" class="headerlink" title="三、预测性历史更新"></a>三、预测性历史更新</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fetch.cc:</span></span><br><span class="line">-&gt;<span class="built_in">lookupAndUpdateNextPC</span>()</span><br><span class="line">    -&gt;branchPred-&gt;<span class="built_in">predict</span>()</span><br><span class="line">    <span class="comment">// bpred_unit.cc</span></span><br><span class="line">    -&gt;<span class="built_in">updateHistories</span>()</span><br><span class="line">        <span class="comment">// tage_sc_l.cc</span></span><br><span class="line">        -&gt;<span class="built_in">updateHistories</span>()</span><br><span class="line">            <span class="comment">// tage.cc</span></span><br><span class="line">            -&gt;<span class="built_in">updateHistories</span>()</span><br><span class="line">            <span class="comment">// 此时是预测性更新</span></span><br><span class="line">            -&gt;<span class="built_in">updatePathAndGlobalHistory</span>()</span><br><span class="line">                <span class="comment">// tage_sc_l.cc</span></span><br><span class="line">                -&gt;<span class="built_in">updatePathAndGlobalHistory</span>()</span><br><span class="line">                    <span class="comment">// Update path history</span></span><br><span class="line">                    tHist.pathHist =</span><br><span class="line">                        <span class="built_in">calcNewPathHist</span>(tid, branch_pc, tHist.pathHist, taken, brtype, target);</span><br><span class="line">                -&gt;<span class="built_in">updateGHist</span>()</span><br><span class="line">                    <span class="comment">// tage_base.cc</span></span><br><span class="line">                    -&gt;<span class="built_in">updateGHist</span>()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="四、预测性历史恢复"><a href="#四、预测性历史恢复" class="headerlink" title="四、预测性历史恢复"></a>四、预测性历史恢复</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fetch.cc:</span></span><br><span class="line">-&gt;branchPred-&gt;<span class="built_in">squash</span>()</span><br><span class="line">    <span class="comment">// bpred_unit.cc</span></span><br><span class="line">    -&gt;<span class="built_in">squash</span>()</span><br><span class="line">        <span class="comment">// tage_sc_l.cc</span></span><br><span class="line">        -&gt;<span class="built_in">update</span>()</span><br><span class="line">            <span class="comment">// tage_base.cc</span></span><br><span class="line">            -&gt;<span class="built_in">squash</span>()</span><br><span class="line">            -&gt;<span class="built_in">updateHistories</span>()</span><br><span class="line">            -&gt;<span class="built_in">restoreHistState</span>()    <span class="comment">// 在这个函数里面完成历史的恢复</span></span><br><span class="line">            <span class="comment">// 对于pathHist而言，其是随bi一起流动的</span></span><br><span class="line">            <span class="comment">// 对于globalHist而言，其是保存的vector数组，利用指针ptGhist进行恢复的</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Gem5/" rel="tag"># Gem5</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/06/25/spec2017%E5%9C%A8Gem5%E7%9A%84SE%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/" rel="prev" title="spec2017在Gem5的SE模式下的运行错误问题">
+                  <i class="fa fa-angle-left"></i> spec2017在Gem5的SE模式下的运行错误问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Devil</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">32k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">29 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"zhuanshulz","repo":"zhuanshulz.github.io","client_id":"Ov23liQVTrz9OYl6Fv5k","client_secret":"b8090ec8ddd5e75532f732306fcbf4c5a8b0bddc","admin_user":"zhuanshulz","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"158bea6dabc0d1583c3f222faf20ffc2"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
