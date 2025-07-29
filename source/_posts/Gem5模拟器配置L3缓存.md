@@ -28,7 +28,7 @@ class L3Cache(Cache):
 ```
 ---
 ## 二、修改 CacheConfig.py
-文件路径：./configs/common/Caches.py
+文件路径：./configs/common/CacheConfig.py
 
 
 ```python
